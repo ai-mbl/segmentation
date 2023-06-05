@@ -2,25 +2,14 @@
 
 ## Setup
 
-Create a conda environment for this exercise and activate it:
-```
-conda create -n 05_image_segmentation python=3.9
+Please run the setup script to create the environment for this exercise and download data.
+
+```bash
+sh setup.sh
 ```
 
-Activate it:
+When you are ready to start the exercise, make sure you are in your base environment and then run jupyter lab.
+```bash
+mamba activate base
+jupyter lab
 ```
-conda activate 05_image_segmentation
-```
-
-Install dependencies:
-```
-conda install -c pytorch pytorch jupyter imageio scipy tensorboard torchvision matplotlib cudatoolkit=10.2
-```
-
-Start jupyter:
-
-```
-jupyter notebook
-```
-
-...and continue with the instructions in the notebook.
