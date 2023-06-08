@@ -71,16 +71,23 @@ image_file_type = ".***"
 mask_file_type = ".***"
 
 # simple hash check to let you know if you got the right answers
-assert sum([hash(num_train_pairs), hash(num_val_pairs), hash(image_file_type), hash(mask_file_type)]) == 527882130944666052
+assert (
+    sum(
+        [
+            hash(num_train_pairs),
+            hash(num_val_pairs),
+            hash(image_file_type),
+            hash(mask_file_type),
+        ]
+    )
+    == 527882130944666052
+)
 # %% tags=["solution"]
 # Write your answers here:
 num_train_pairs = 536
 num_val_pairs = 134
 image_file_type = ".tif"
 mask_file_type = ".tif"
-
-# simple hash check to let you know if you got the right answers
-assert sum([hash(num_train_pairs), hash(num_val_pairs), hash(image_file_type), hash(mask_file_type)]) == 527882130944666052
 
 # %% [markdown]
 # __Task 2.2__: Visualize some of the files.
