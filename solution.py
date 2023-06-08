@@ -936,6 +936,7 @@ def validate(
     )
 
 
+# %%
 # Quick sanity check for your train function to make sure no errors are thrown:
 simple_net = UNet(1, 1, depth=1, final_activation=None)
 
