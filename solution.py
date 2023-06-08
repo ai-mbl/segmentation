@@ -74,10 +74,10 @@ list([x for x in Path().iterdir() if x.is_dir()])
 
 # %%
 # Write your answers here:
-num_train_pairs = ...
-num_val_pairs = ...
-image_file_type = ".***"
-mask_file_type = ".***"
+num_train_pairs: int = ...
+num_val_pairs: int = ...
+image_file_type: str = ".***"
+mask_file_type: str = ".***"
 
 # simple hash check to let you know if you got the right answers
 assert (
