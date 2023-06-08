@@ -498,7 +498,7 @@ loss_function: torch.nn.Module = ...
 
 # %% tags=["solution"]
 # implement your loss here or initialize the one of your choice from pytorch
-loss_function = nn.BCELoss()
+loss_function: torch.nn.Module = nn.BCELoss()
 
 # loss function sanity check:
 target = torch.tensor([0.0, 1.0])
