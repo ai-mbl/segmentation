@@ -1,22 +1,22 @@
 # %% [markdown]
 # # Exercise 05 Image Segmentation
-# 
+#
 # <hr style="height:2px;">
-# 
+#
 # In this notebook, we will train a 2D U-net for nuclei segmentation in the Kaggle Nuclei dataset.
-# 
+#
 # Written by Valentyna Zinchenko, Constantin Pape and William Patton.
 
 # %% [markdown]
 # Our goal is to produce a model that can take an image as input and produce a segmentation as shown in this table
-# 
+#
 # | Image | Mask |
 # | :-: | :-: |
 # | ![image](static/image.png) | ![mask](static/mask.png) |
 
 # %% [markdown]
 # <hr style="height:2px;">
-# 
+#
 # ## 1) The libraries
 
 # %%
@@ -36,7 +36,7 @@ from torchvision import transforms
 
 # %% [markdown]
 # <hr style="height:2px;">
-# 
+#
 # ## 2) Data loading and preprocessing
 
 # %% [markdown]
@@ -57,13 +57,13 @@ list([x for x in Path().iterdir() if x.is_dir()])
 # %% [markdown]
 # __Task 2.1__: Explore the contents of both folders. Running `ls your_folder_name`
 # should display you what is stored in the folder of your interest.
-# 
+#
 # You should be familiar with how are the images stored and the storage format.
 # Questions:
 # 1) How many image/mask pairs are there in the training/validation set?
 # 2) What is the file type of the images/masks?
 
-# %% 
+# %%
 # Write your answers here:
 num_train_pairs = ...
 num_val_pairs = ...
@@ -87,6 +87,7 @@ assert sum([hash(num_train_pairs), hash(num_val_pairs), hash(image_file_type), h
 # 
 # Hint: you can use the following function to display an image:
 
+
 # %%
 def show_one_image(image_path):
     image = imageio.imread(image_path)
@@ -109,16 +110,17 @@ show_one_image(
 # %% [markdown]
 # ### Data processing
 # Making the data accessible for training. What one would normally start with in any machine learning pipeline is writing a dataset - a class that will fetch the training samples. Once you switch to using your own data, you would have to figure out how to fetch the data yourself. Luckily most of the functionality is already provided by PyTorch, but what you need to do is to write a class, that will actually supply the dataloader with training samples - a Dataset.
-# 
+#
 # Torch Dataset docs can be found [here](https://pytorch.org/docs/stable/data.html?highlight=dataset#torch.utils.data.Dataset) and a totorial on how to use them can be found [here](https://pytorch.org/tutorials/beginner/data_loading_tutorial.html#dataset-class).
-# 
+#
 # The main idea: any Dataset class should implement two "magic" methods:
 # 1) `__len__(self)`: this defines the behavior of the python builtin `len` function. i.e:
 #     `len(dataset)` => number of elements in your dataset
 # 2) `__getitem__(self, idx)`: this defines bracket indexing behavior of your class. i.e:
 #     `dataset[idx]` => element of your dataset associated with `idx`
-# 
+#
 # For this exercise you will not have to do it yourself yet, but please carefully read through the provided class:
+
 
 # %%
 # any PyTorch dataset class should inherit the initial torch.utils.data.Dataset
@@ -171,10 +173,11 @@ class NucleiDataset(Dataset):
 # <div class="alert alert-block alert-info">
 #     <b>Task 2.3</b>: Use the defined dataset to show a random image/mask pair
 # </div>
-# 
-# Hint: use the `len` function and `[]` indexing defined by `__len__` and `__get_index__` in the Dataset class to fill in the function below 
+#
+# Hint: use the `len` function and `[]` indexing defined by `__len__` and `__get_index__` in the Dataset class to fill in the function below
 
-# %%
+
+# %% tags=["solution"]
 def show_random_dataset_image(dataset):
     idx = np.random.randint(0, len(dataset))  # take a random sample
     img, mask = dataset[idx]  # get the image and the nuclei masks
@@ -193,14 +196,14 @@ train_data = NucleiDataset(TRAIN_DATA_PATH)
 show_random_dataset_image(train_data)
 
 # %% [markdown]
-# 
-# 
+#
+#
 # As you can probably see, if you clicked enough times, some of the images are really huge! What happens if we load them into memory and run the model on them? We might run out of memory. That's why normally, when training networks on images or volumes one has to be really careful about the sizes. In practice, you would want to regulate their size. Additional reason for restraining the size is: if we want to train in batches (faster and more stable training), we need all the images in the batch to be of the same size. That is why we prefer to either resize or crop them.
-# 
+#
 # Here is a function (well, actually a class), that will apply a transformation 'random crop'. Notice that we apply it to images and masks simultaneously to make sure they correspond, despite the randomness.
-# 
+#
 # Why do we bother making a bulky class to handle the relatively simple task of loading images? We want to keep the code modular. We want to write one dataset object, and then we can try all the possible transforms with this one dataset. Similarly, we want to write one Randomcrop transform object, and then we can reuse it for any other image datasets we night have in the future.
-# 
+#
 
 # %% [markdown]
 # PS: PyTorch already has quite a bunch of all possible data transforms, so if you need one, check [here](https://pytorch.org/vision/stable/transforms.html#transforms-on-pil-image-and-torch-tensor). The biggest problem with them is that they are clearly separated into transforms applied to PIL images (remember, we initially load the images as PIL.Image?) and torch.tensors (remember, we converted the images into tensors by calling transforms.ToTensor()?). This can be incredibly annoying if for some reason you might need to transorm your images to tensors before applying any other transforms or you don't want to use PIL library at all.
@@ -227,10 +230,10 @@ show_random_dataset_image(val_data)
 # %% [markdown]
 # <div class="alert alert-block alert-success">
 # <h2> Checkpoint 1 </h2>
-# 
+#
 # We will go over the steps up to this point soon. If you have time to spare, consider experimenting with various augmentations. Your goal is to augment your training data in such a way that you expand the distribution of training data to cover the distribution of the rest of your data and avoid overly relying on extrapolation at test time. If this sounds somewhat vague thats because augmenting is a bit of an artform. Common augmentations that have been shown to work well are adding noise, mirror, transpose, and rotations.
 # Note that some of these transformations need to be applied to both the raw image and the segmentation, wheras others should only be applied to the image (i.e. noise augmentation). The Dataset `__init__` function takes 2 arguments, `transform` and `img_transform` so that you can define a set of transformations that you only want to apply to the image.
-#     
+#
 # </div>
 
 # %%
@@ -249,16 +252,17 @@ show_random_dataset_image(augmented_data)
 
 # %% [markdown]
 # ## 3) The model: U-net
-# 
+#
 # Now we need to define the architecture of the model to use. We will use a [U-Net](https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/) that has proven to steadily outperform the other architectures in segmenting biological and medical images.
-# 
+#
 # The image of the model precisely describes all the building blocks you need to use to create it. All of them can be found in the list of PyTorch layers (modules) [here](https://pytorch.org/docs/stable/nn.html#convolution-layers).
-# 
+#
 # The U-net has an encoder-decoder structure:
-# 
+#
 # In the encoder pass, the input image is successively downsampled via max-pooling. In the decoder pass it is upsampled again via transposed convolutions.
-# 
+#
 # In adddition, it has skip connections, that bridge the output from an encoder to the corresponding decoder.
+
 
 # %%
 class UNet(nn.Module):
@@ -390,9 +394,9 @@ class UNet(nn.Module):
 # %% [markdown]
 # <div class="alert alert-block alert-info">
 #     <b>Task 3.1</b>: Spot the best UNet
-# 
+#
 # In the next cell you fill find a series of UNet definitions. Most of them won't work. Some of them will work but not well. One will do well. Can you identify which model is the winner? Unfortunately you can't yet test your hypotheses yet since we have not covered loss functions, optimizers, and train/validation loops.
-#     
+#
 # </div>
 
 # %%
@@ -410,15 +414,15 @@ unetD = torch.nn.Sequential(
 )
 
 
-# %% [markdown]
+# %% [markdown] tags=["solution"]
 # Provide your guesses as to what, if anything, might go wrong with each of these models:
-# 
+#
 # unetA: The correct unet.
-# 
+#
 # unetB: Too deep. You won't be able to train with input size 256 since the lowest level will get zero sized tensors.
-# 
+#
 # unetC: A classic mistake putting a Sigmoid after a Relu activation. You will never predict anything < 0.5
-# 
+#
 # unetD: barely any depth to this unet. It should train and give you what you want, I just wouldn't expect good performance
 
 # %%
@@ -430,9 +434,9 @@ best_unet = unetA
 
 # %% [markdown]
 # ## 4) Loss and distance metrics
-# 
+#
 # The next step to do would be writing a loss function - a metric that will tell us how close we are to the desired output. This metric should be differentiable, since this is the value to be backpropagated. The are [multiple losses](https://lars76.github.io/2018/09/27/loss-functions-for-segmentation.html) we could use for the segmentation task.
-# 
+#
 # Take a moment to think which one is better to use. If you are not sure, don't forget that you can always google! Before you start implementing the loss yourself, take a look at the [losses](https://pytorch.org/docs/stable/nn.html#loss-functions) already implemented in PyTorch. You can also look for implementations on GitHub.
 
 # %% [markdown]
@@ -440,7 +444,7 @@ best_unet = unetA
 #     <b>Task 4.1</b>: implement your loss (or take one from pytorch):
 # </div>
 
-# %%
+# %% tags=["solution"]
 # implement your loss here or initialize the one of your choice from pytorch
 loss_function = nn.BCELoss()
 
@@ -475,6 +479,7 @@ except RuntimeError as e:
 # We can use it for validation if we interpret set $a$ as predictions and $b$ as labels. It is often used to evaluate segmentations with sparse foreground, because the denominator normalizes by the number of foreground pixels.
 # The Dice Coefficient is closely related to Jaccard Index / Intersection over Union.
 
+
 # %%
 # sorensen dice coefficient implemented in torch
 # the coefficient takes values in two discrete arrays
@@ -502,10 +507,10 @@ class DiceCoefficient(nn.Module):
 #     </ol>
 # </div>
 
-# %% [markdown]
+# %% [markdown] tags=["solution"]
 # Answer:
 # 1) Score remains between (0,1) with 0 being the worst score and 1 being the best. This case essentially gives you the Dice Loss and can be a good alternative to cross entropy.
-# 
+#
 # 2) Scores will fall in the range of [-1,1]. Overly confident scores will be penalized i.e. if the target is `[0,1]` then a prediction of `[0,2]` will score lower than a prediction of `[0,3]`.
 
 # %%
@@ -526,22 +531,23 @@ print(dice(out_of_bounds_prediction, target))
 # %% [markdown]
 # <div class="alert alert-block alert-success">
 #     <h2>Checkpoint 2</h2>
-# 
+#
 # This is a good place to stop for a moment. If you have extra time look into some extra loss functions or try to implement your own if you haven't yet. You could also explore alternatives for evaluation metrics since there are alternatives that you could look into.
-#     
+#
 # </div>
-# 
+#
 # <hr style="height:2px;">
 
 # %% [markdown]
 # ## 5) Training
-# 
+#
 # Let's start with writing training and validation functions.
 
 # %% [markdown]
-# __Task 5.1__: fix in all the TODOs to make the train function work. If confused, you can use this [PyTorch tutorial](https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html) as a template 
+# __Task 5.1__: fix in all the TODOs to make the train function work. If confused, you can use this [PyTorch tutorial](https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html) as a template
 
-# %%
+
+# %% tags=["solution"]
 # apply training for one epoch
 def train(
     model,
@@ -643,7 +649,8 @@ train(
 #     <b>Task 5.2</b>: fix in all the TODOs to make the validate function work. If confused, you can use this <a href="https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html">PyTorch tutorial</a> as a template
 # </div>
 
-# %%
+
+# %% tags=["solution"]
 # run validation after training epoch
 def validate(
     model,
@@ -666,20 +673,19 @@ def validate(
     # set model to eval mode
     model.eval()
     model.to(device)
-    
+
     # running loss and metric values
     val_loss = 0
     val_metric = 0
 
     # disable gradients during validation
     with torch.no_grad():
-
         # iterate over validation loader and update loss and metric values
         for x, y in loader:
             x, y = x.to(device), y.to(device)
             prediction = model(x)
             val_loss += loss_function(prediction, y).item()
-            val_metric += metric(prediction>0.5, y).item()
+            val_metric += metric(prediction > 0.5, y).item()
 
     # normalize loss and metric
     val_loss /= len(loader)
@@ -717,11 +723,11 @@ validate(
     train_loader,
     loss_function=torch.nn.MSELoss(),
     metric=DiceCoefficient(),
-    step=0
+    step=0,
 )
 
 # %% [markdown]
-# 
+#
 # We want to use GPU to train faster. Make sure GPU is available
 
 # %%
@@ -763,36 +769,37 @@ for epoch in range(n_epochs):
 
 
 # %% [markdown]
-# Your validation metric was probably around 85% by the end of the training. That sounds good enough, but an equally important thing to check is: 
-# Open the Images tab in your Tensorboard and compare predictions to targets. Do your predictions look reasonable? Are there any obvious failure cases? 
-# If nothing is clearly wrong, let's see if we can still improve the model performance by changing the model or the loss 
-# 
+# Your validation metric was probably around 85% by the end of the training. That sounds good enough, but an equally important thing to check is:
+# Open the Images tab in your Tensorboard and compare predictions to targets. Do your predictions look reasonable? Are there any obvious failure cases?
+# If nothing is clearly wrong, let's see if we can still improve the model performance by changing the model or the loss
+#
 
 # %% [markdown]
 # <div class="alert alert-block alert-success">
 #     <h2>Checkpoint 3</h2>
-# 
+#
 # This is the end of the guided exercise. We will go over all of the code up until this point shortly. While you wait you are encouraged to try alternative loss functions, evaluation metrics, augmentations, and networks.
 # After this come additional exercises if you are interested and have the time.
-# 
+#
 # </div>
 # <hr style="height:2px;">
 
 # %% [markdown]
-# ## Additional Exercises 
-# 
+# ## Additional Exercises
+#
 # 1. Modify and evaluate the following architecture variants of the U-Net:
 #     * use [GroupNorm](https://pytorch.org/docs/stable/nn.html#torch.nn.GroupNorm) to normalize convolutional group inputs
 #     * use more layers in your UNet.
-# 
-# 2. Use the Dice coefficient as loss function. Before we only used it for validation, but it is differentiable and can thus also be used as loss. Compare to the results from exercise 2. 
+#
+# 2. Use the Dice coefficient as loss function. Before we only used it for validation, but it is differentiable and can thus also be used as loss. Compare to the results from exercise 2.
 # Hint: The optimizer we use finds minima of the loss, but the minimal value for the Dice coefficient corresponds to a bad segmentation. How do we need to change the Dice coefficient to use it as loss nonetheless?
-# 
+#
 # 3. Compare the results of these trainings to the first one. If any of the modifications you've implemented show better results, combine them (e.g. add both GroupNorm and one more layer) and run trainings again.
 # What is the best result you could get?
 
 # %% [markdown]
 # ## Group norm
+
 
 # %%
 class UNetGN(nn.Module):
@@ -981,6 +988,7 @@ for epoch in range(n_epochs):
 # %% [markdown]
 # ## Dice loss
 
+
 # %%
 class RevDice(nn.Module):
     def __init__(self, eps=1e-6):
@@ -1091,8 +1099,6 @@ for epoch in range(n_epochs):
     )
     step = epoch * len(train_loader.dataset)
     validate(net, val_loader, dice_loss, metric, step=step, tb_logger=logger)
-
-
 
 
 # %%
