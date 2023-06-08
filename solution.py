@@ -532,6 +532,12 @@ except RuntimeError as e:
 # The Dice Coefficient is closely related to Jaccard Index / Intersection over Union.
 
 
+# %% [markdown]
+# <div class="alert alert-block alert-info">
+# <b>Task 4.2</b>: Fill in implementation details for the dice coefficient
+# </div>
+
+
 # %%
 # sorensen dice coefficient implemented in torch
 # the coefficient takes values in two discrete arrays
@@ -545,10 +551,41 @@ class DiceCoefficient(nn.Module):
     # the dice coefficient of two sets represented as vectors a, b ca be
     # computed as (2 *|a b| / (a^2 + b^2))
     def forward(self, prediction, target):
-        intersection = (prediction * target).sum()
-        denominator = (prediction * prediction).sum() + (target * target).sum()
-        return 2 * intersection / denominator.clamp(min=self.eps)
+        intersection = ...
+        union = ...
+        return 2 * intersection / union.clamp(min=self.eps)
 
+
+# %% tags=["solution"]
+# sorensen dice coefficient implemented in torch
+# the coefficient takes values in two discrete arrays
+# with values in {0, 1}, and produces a score in [0, 1]
+# where 0 is the worst score, 1 is the best score
+class DiceCoefficient(nn.Module):
+    def __init__(self, eps=1e-6):
+        super().__init__()
+        self.eps = eps
+
+    # the dice coefficient of two sets represented as vectors a, b ca be
+    # computed as (2 *|a b| / (a^2 + b^2))
+    def forward(self, prediction, target):
+        intersection = (prediction * target).sum()
+        union = (prediction * prediction).sum() + (target * target).sum()
+        return 2 * intersection / union.clamp(min=self.eps)
+
+
+# %%
+# Test your dice loss here, are you getting the right scores?
+dice = DiceCoefficient()
+target = torch.tensor([0.0, 1.0])
+bad_prediction1 = torch.tensor([1.0, 1.0])
+bad_prediction2 = torch.tensor([0.0, 0.0])
+wrong_prediction = torch.tensor([1.0, 0.0])
+
+assert dice(good_prediction, target) == 1.0
+assert dice(bad_prediction1, target) == 0.5
+assert dice(bad_prediction2, target) == 0.0
+assert dice(wrong_prediction, target) == 0.0
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
