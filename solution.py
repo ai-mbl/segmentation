@@ -90,8 +90,8 @@ image_file_type = ".tif"
 mask_file_type = ".tif"
 
 # %% [markdown]
-# __Task 2.2__: Visualize some of the files.
-# 
+# __Task 2.2__: Visualize the image associated with the following mask:
+#
 # Hint: you can use the following function to display an image:
 
 
@@ -100,14 +100,21 @@ def show_one_image(image_path):
     image = imageio.imread(image_path)
     plt.imshow(image)
 
+
 # %%
+# show mask
 show_one_image(
     Path(
-        "nuclei_train_data/003cee89357d9fe13516167fd67b609a164651b21934585648c740d2c3d86dc1/mask.tif"
+        "nuclei_train_data/f29fd9c52e04403cd2c7d43b6fe2479292e53b2f61969d25256d2d2aca7c6a81/mask.tif"
     )
 )
 
 # %%
+# show image
+show_one_image(Path(...))
+
+# %% tags=["solution"]
+# show image
 show_one_image(
     Path(
         "nuclei_train_data/003cee89357d9fe13516167fd67b609a164651b21934585648c740d2c3d86dc1/image.tif"
