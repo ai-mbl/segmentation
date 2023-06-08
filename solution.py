@@ -1036,6 +1036,21 @@ class UNetGN(UNet):
     # Convolutional block for single layer of the decoder / encoder
     # we apply two 2d convolutions with relu activation
     def _conv_block(self, in_channels, out_channels):
+        # See the original UNet for an example of how to build the convolutional block
+        # We want operation -> activation -> normalization (2x)
+        # Hint: Group norm takes a "num_groups" argument. Use 8 to match the solution
+        return ...
+
+
+# %% tags=["solution"]
+class UNetGN(UNet):
+    """
+    A subclass of UNet that implements GroupNorm in each convolutional block
+    """
+
+    # Convolutional block for single layer of the decoder / encoder
+    # we apply two 2d convolutions with relu activation
+    def _conv_block(self, in_channels, out_channels):
         return nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
             nn.ReLU(),
@@ -1075,10 +1090,23 @@ for epoch in range(n_epochs):
 
 
 # %% [markdown]
-# ## More layers
+# <div class="alert alert-block alert-info">
+#     <b>Task BONUS.2</b>: More Layers
+# </div>
 
 # %%
-# Experiment with more layers. For example 5 layers
+# Experiment with more layers. For example UNet with depth 5
+
+model = ...
+
+optimizer = torch.optim.Adam(model.parameters())
+
+metric = DiceCoefficient()
+
+logger = SummaryWriter("runs/UNet5layers")
+
+# %% tags=["solution"]
+# Experiment with more layers. For example UNet with depth 5
 
 model = UNet(1, 1, depth=5, final_activation=nn.Sigmoid())
 
@@ -1088,7 +1116,7 @@ metric = DiceCoefficient()
 
 logger = SummaryWriter("runs/UNet5layers")
 
-
+# %%
 # train for 25 epochs
 # during the training you can inspect the
 # predictions in the tensorboard
@@ -1108,119 +1136,155 @@ for epoch in range(n_epochs):
 
 
 # %% [markdown]
-# ## Dice loss
+# <div class="alert alert-block alert-info">
+#     <b>Task BONUS.2</b>: Dice Loss
+#     Dice loss is a simple inversion of the dice coefficient.
+#     We already have a dice coefficient implementation, so now we just
+#     need a layer that can invert it.
+# </div>
 
 
 # %%
-class RevDice(nn.Module):
-    def __init__(self, eps=1e-6):
+class Invert(nn.Module):
+    """
+    This layer will simply negate the input with an optional offset.
+    We support an optional offset because it is common to have 0 as
+    the optimal loss. Since the optimal dice coefficient is 1, it is
+    convenient to get 1 - dice_coefficient as our loss.
+
+    You could leave off the offset and simply have -1 as your optimal loss.
+    """
+
+    def __init__(self, offset: float = 1):
+        ...
+
+
+# %% tags=["solution"]
+class Invert(nn.Module):
+    """
+    This layer will simply negate the input with an optional offset.
+    We support an optional offset because it is common to have 0 as
+    the optimal loss. Since the optimal dice coefficient is 1, it is
+    convenient to get 1 - dice_coefficient as our loss.
+
+    You could leave off the offset and simply have -1 as your optimal loss.
+    """
+
+    def __init__(self, offset: float = 1):
         super().__init__()
-        self.eps = eps
+        self.offset = offset
 
-    # the dice coefficient of two sets represented as vectors a, b ca be
-    # computed as (2 *|a b| / (a^2 + b^2))
-    def forward(self, prediction, target):
-        intersection = (prediction * target).sum()
-        denominator = (prediction * prediction).sum() + (target * target).sum()
-        return 1 - (2 * intersection / denominator.clamp(min=self.eps))
+    def forward(self, x):
+        return self.offset - x
 
+
+# %%
+# Now combine the DiceCoefficient layer with the Invert layer to make a Dice Loss
+dice_loss = ...
+
+
+# %% tags=["solution"]
+# Now combine the DiceCoefficient layer with the Invert layer to make a Dice Loss
+dice_loss = torch.nn.Sequential(DiceCoefficient(), Invert())
 
 # %%
 # Experiment with Dice Loss
+net = ...
+optimizer = ...
+metric = ...
+loss_func = ...
 
-dice_loss = RevDice()
-
+# %% tags=["solution"]
+# Experiment with Dice Loss
 net = UNet(1, 1, final_activation=nn.Sigmoid())
-
 optimizer = torch.optim.Adam(net.parameters())
-
 metric = DiceCoefficient()
+loss_func = dice_loss
 
+# %%
 logger = SummaryWriter("runs/UNet_diceloss")
 
-
-# train for 40 epochs
-# during the training you can inspect the
-# predictions in the tensorboard
 n_epochs = 40
 for epoch in range(n_epochs):
     train(
         net,
         train_loader,
         optimizer=optimizer,
-        loss_function=dice_loss,
+        loss_function=loss_func,
         epoch=epoch,
         log_interval=5,
         tb_logger=logger,
     )
     step = epoch * num_train_pairs
-    validate(net, val_loader, dice_loss, metric, step=step, tb_logger=logger)
+    validate(net, val_loader, loss_func, metric, step=step, tb_logger=logger)
 
 
 # %% [markdown]
-# ## Group Norm + Dice
+# <div class="alert alert-block alert-info">
+#     <b>Task BONUS.2</b>: Group Norm + Dice
+# </div>
 
 # %%
-# Experiment with GN and dice loss
-
-net = UNetGN(1, 1, final_activation=nn.Sigmoid())
-
-optimizer = torch.optim.Adam(net.parameters())
-
-metric = DiceCoefficient()
+net = ...
+optimizer = ...
+metric = ...
+loss_func = ...
 
 logger = SummaryWriter("runs/UNetGN_diceloss")
 
+# %% tags=["solution"]
+net = UNetGN(1, 1, final_activation=nn.Sigmoid())
+optimizer = torch.optim.Adam(net.parameters())
+metric = DiceCoefficient()
+loss_func = dice_loss
 
-# train for 25 epochs
-# during the training you can inspect the
-# predictions in the tensorboard
+# %%
+logger = SummaryWriter("runs/UNetGN_diceloss")
+
 n_epochs = 40
 for epoch in range(n_epochs):
     train(
         net,
         train_loader,
         optimizer=optimizer,
-        loss_function=dice_loss,
+        loss_function=loss_func,
         epoch=epoch,
         log_interval=5,
         tb_logger=logger,
     )
     step = epoch * num_train_pairs
-    validate(net, val_loader, dice_loss, metric, step=step, tb_logger=logger)
+    validate(net, val_loader, loss_func, metric, step=step, tb_logger=logger)
 
 
 # %% [markdown]
-# ## Group Norm + Dice + Unet 5 Layers
+# <div class="alert alert-block alert-info">
+#     <b>Task BONUS.2</b>: Group Norm + Dice + Unet 5 Layers
+# </div>
 
 # %%
-# Experiment with group norm and increased depth. For example 5 layers
+net = ...
+optimizer = ...
+metric = ...
+loss_func = ...
 
+# %% tags=["solution"]
 net = UNetGN(1, 1, depth=5, final_activation=nn.Sigmoid())
-
 optimizer = torch.optim.Adam(net.parameters())
-
 metric = DiceCoefficient()
+loss_func = dice_loss
 
 logger = SummaryWriter("runs/UNet5layersGN_diceloss")
 
-
-# train for 25 epochs
-# during the training you can inspect the
-# predictions in the tensorboard
 n_epochs = 40
 for epoch in range(n_epochs):
     train(
         net,
         train_loader,
         optimizer=optimizer,
-        loss_function=dice_loss,
+        loss_function=loss_func,
         epoch=epoch,
         log_interval=5,
         tb_logger=logger,
     )
     step = epoch * num_train_pairs
-    validate(net, val_loader, dice_loss, metric, step=step, tb_logger=logger)
-
-
-# %%
+    validate(net, val_loader, loss_func, metric, step=step, tb_logger=logger)
