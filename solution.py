@@ -589,33 +589,24 @@ assert dice(wrong_prediction, target) == 0.0
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-# <b>Task 4.2</b>: What happes if your predictions are not discrete elements of {0,1}?
+# <b>Task 4.3</b>: What happes if your predictions are not discrete elements of {0,1}?
 #     <ol>
 #         <li>What if the predictions are in range (0,1)?</li>
 #         <li>What if the predictions are in range ($-\infty$,$\infty$)?</li>
 #     </ol>
 # </div>
 
+# %% [markdown]
+# Answer:
+# 1) ...
+#
+# 2) ...
+
 # %% [markdown] tags=["solution"]
 # Answer:
 # 1) Score remains between (0,1) with 0 being the worst score and 1 being the best. This case essentially gives you the Dice Loss and can be a good alternative to cross entropy.
 #
 # 2) Scores will fall in the range of [-1,1]. Overly confident scores will be penalized i.e. if the target is `[0,1]` then a prediction of `[0,2]` will score lower than a prediction of `[0,3]`.
-
-# %%
-dice = DiceCoefficient()
-
-target = torch.tensor([0.0, 1.0])
-bad_prediction1 = torch.tensor([1.0, 1.0])
-bad_prediction2 = torch.tensor([0.0, 0.0])
-wrong_prediction = torch.tensor([1.0, 0.0])
-out_of_bounds_prediction = torch.tensor([0, -2])
-
-print(dice(good_prediction, target))
-print(dice(bad_prediction1, target))
-print(dice(bad_prediction2, target))
-print(dice(wrong_prediction, target))
-print(dice(out_of_bounds_prediction, target))
 
 # %% [markdown]
 # <div class="alert alert-block alert-success">
