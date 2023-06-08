@@ -500,8 +500,12 @@ loss_function: torch.nn.Module = ...
 # implement your loss here or initialize the one of your choice from pytorch
 loss_function: torch.nn.Module = nn.BCELoss()
 
+# %% [markdown]
+# <div class="alert alert-block alert-warning">
+#     Test your loss function here, is it behaving as you'd expect?
+# </div>
+
 # %%
-# loss function sanity check:
 target = torch.tensor([0.0, 1.0])
 good_prediction = torch.tensor([0.01, 0.99])
 bad_prediction = torch.tensor([0.4, 0.6])
@@ -575,8 +579,12 @@ class DiceCoefficient(nn.Module):
         return 2 * intersection / union.clamp(min=self.eps)
 
 
+# %% [markdown]
+# <div class="alert alert-block alert-warning">
+#     Test your dice loss here, are you getting the right scores?
+# </div>
+
 # %%
-# Test your dice loss here, are you getting the right scores?
 dice = DiceCoefficient()
 target = torch.tensor([0.0, 1.0])
 bad_prediction1 = torch.tensor([1.0, 1.0])
@@ -787,9 +795,14 @@ def train(
             break
 
 
+# %% [markdown]
+# <div class="alert alert-block alert-warning">
+#     Quick sanity check for your train function to make sure no errors are thrown:
+#     Good place to test unetA, unetB, unetC, unetD to see if you can eliminate some
+# </div>
+
+
 # %%
-# Quick sanity check for your train function to make sure no errors are thrown:
-# Good place to test unetA, unetB, unetC, unetD to see if you can eliminate some
 simple_net = UNet(1, 1, depth=1, final_activation=nn.Sigmoid())
 
 train(
@@ -936,8 +949,12 @@ def validate(
     )
 
 
+# %% [markdown]
+# <div class="alert alert-block alert-warning">
+#     Quick sanity check for your train function to make sure no errors are thrown
+# </div>
+
 # %%
-# Quick sanity check for your train function to make sure no errors are thrown:
 simple_net = UNet(1, 1, depth=1, final_activation=None)
 
 # build the dice coefficient metric
