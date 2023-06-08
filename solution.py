@@ -80,7 +80,19 @@ num_val_pairs: int = ...
 image_file_type: str = ".***"
 mask_file_type: str = ".***"
 
-# simple hash check to let you know if you got the right answers
+# %% tags=["solution"]
+# Write your answers here:
+num_train_pairs = 536
+num_val_pairs = 134
+image_file_type = ".tif"
+mask_file_type = ".tif"
+
+# %% [markdown]
+# <div class="alert alert-block alert-warning">
+#     simple hash check to let you know if you got the right answers
+# </div>
+
+# %%
 assert (
     sum(
         [
@@ -92,12 +104,6 @@ assert (
     )
     == 527882130944666052
 )
-# %% tags=["solution"]
-# Write your answers here:
-num_train_pairs = 536
-num_val_pairs = 134
-image_file_type = ".tif"
-mask_file_type = ".tif"
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
