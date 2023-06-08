@@ -1021,22 +1021,17 @@ for epoch in range(n_epochs):
 # What is the best result you could get?
 
 # %% [markdown]
-# ## Group norm
+
+# <div class="alert alert-block alert-info">
+#     <b>Task BONUS.1</b>: Group Norm, update the UNet to use a GroupNorm layer
+# </div>
 
 
 # %%
 class UNetGN(UNet):
-    """UNet implementation with Group Norm
-    Arguments:
-      in_channels: number of input channels
-      out_channels: number of output channels
-      final_activation: activation applied to the network output
     """
-
-    # _conv_block and _upsampler are just helper functions to
-    # construct the model.
-    # encapsulating them like so also makes it easy to re-use
-    # the model implementation with different architecture elements
+    A subclass of UNet that implements GroupNorm in each convolutional block
+    """
 
     # Convolutional block for single layer of the decoder / encoder
     # we apply two 2d convolutions with relu activation
@@ -1044,8 +1039,10 @@ class UNetGN(UNet):
         return nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
             nn.ReLU(),
+            nn.GroupNorm(8, out_channels),
             nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1),
             nn.ReLU(),
+            nn.GroupNorm(8, out_channels),
         )
 
 
