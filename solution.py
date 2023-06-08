@@ -62,13 +62,14 @@ list([x for x in Path().iterdir() if x.is_dir()])
 # %% [markdown]
 
 # <div class="alert alert-block alert-info">
-#     <b>Task 2.1</b>: Explore the contents of both folders. Running `ls your_folder_name`
-#     should display you what is stored in the folder of your interest.
-#
-#     You should be familiar with how are the images stored and the storage format.
-#     Questions:
-#     1) How many image/mask pairs are there in the training/validation set?
-#     2) What is the file type of the images/masks?
+#     <p><b>Task 2.1</b>: Explore the contents of both folders. Running `ls your_folder_name`
+#     should display you what is stored in the folder of your interest.</p>
+#     </p>You should be familiar with how are the images stored and the storage format.</p>
+#     <b>Questions:</b>
+#     <ol>
+#         <li>How many image/mask pairs are there in the training/validation set?</li>
+#         <li>What is the file type of the images/masks?</li>
+#     </ol>
 # </div>
 
 
@@ -100,9 +101,8 @@ mask_file_type = ".tif"
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-#     <b>Task 2.2</b>: Visualize the image associated with the following mask:
-#
-#     Hint: you can use the following function to display an image:
+#     <p><b>Task 2.2</b>: Visualize the image associated with the following mask:</p>
+#     <p>Hint: you can use the following function to display an image:</p>
 # </div>
 
 
@@ -196,10 +196,10 @@ class NucleiDataset(Dataset):
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-#     <b>Task 2.3</b>: Use the defined dataset to show a random image/mask pair
+#     <p><b>Task 2.3</b>: Use the defined dataset to show a random image/mask pair</p>
+#     <p>Hint: use the <code>len</code> function and <code>[]</code> indexing defined by <code>__len__</code> and
+#     <code>__get_index__</code> in the Dataset class to fill in the function below.</p>
 # </div>
-#
-# Hint: use the `len` function and `[]` indexing defined by `__len__` and `__get_index__` in the Dataset class to fill in the function below
 
 
 # %%
@@ -267,9 +267,16 @@ show_random_dataset_image(val_data)
 # %% [markdown]
 # <div class="alert alert-block alert-success">
 # <h2> Checkpoint 1 </h2>
-#
-# We will go over the steps up to this point soon. If you have time to spare, consider experimenting with various augmentations. Your goal is to augment your training data in such a way that you expand the distribution of training data to cover the distribution of the rest of your data and avoid overly relying on extrapolation at test time. If this sounds somewhat vague thats because augmenting is a bit of an artform. Common augmentations that have been shown to work well are adding noise, mirror, transpose, and rotations.
-# Note that some of these transformations need to be applied to both the raw image and the segmentation, wheras others should only be applied to the image (i.e. noise augmentation). The Dataset `__init__` function takes 2 arguments, `transform` and `img_transform` so that you can define a set of transformations that you only want to apply to the image.
+# <p>We will go over the steps up to this point soon. If you have time to spare, consider experimenting
+# with various augmentations. Your goal is to augment your training data in such a way that you expand
+# the distribution of training data to cover the distribution of the rest of your data and avoid overly
+# relying on extrapolation at test time. If this sounds somewhat vague thats because augmenting is a
+# bit of an artform. Common augmentations that have been shown to work well are adding noise, mirror,
+# transpose, and rotations.</p>
+# <p>Note that some of these transformations need to be applied to both the raw image and the segmentation,
+# wheras others should only be applied to the image (i.e. noise augmentation). The Dataset <code>__init__</code>
+# function takes 2 arguments, <code>transform</code> and <code>img_transform</code> so that you can define
+# a set of transformations that you only want to apply to the image.</p>
 #
 # </div>
 
