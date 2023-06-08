@@ -1137,7 +1137,7 @@ for epoch in range(n_epochs):
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-#     <b>Task BONUS.2</b>: Dice Loss
+#     <b>Task BONUS.3</b>: Dice Loss
 #     Dice loss is a simple inversion of the dice coefficient.
 #     We already have a dice coefficient implementation, so now we just
 #     need a layer that can invert it.
@@ -1221,7 +1221,7 @@ for epoch in range(n_epochs):
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-#     <b>Task BONUS.2</b>: Group Norm + Dice
+#     <b>Task BONUS.4</b>: Group Norm + Dice
 # </div>
 
 # %%
@@ -1258,7 +1258,7 @@ for epoch in range(n_epochs):
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-#     <b>Task BONUS.2</b>: Group Norm + Dice + Unet 5 Layers
+#     <b>Task BONUS.5</b>: Group Norm + Dice + Unet 5 Layers
 # </div>
 
 # %%
