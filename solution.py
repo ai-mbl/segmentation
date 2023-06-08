@@ -462,7 +462,7 @@ unetD = torch.nn.Sequential(
 #
 # unetD: barely any depth to this unet. It should train and give you what you want, I just wouldn't expect good performance
 
-best_unet: UNet = ...
+favorite_unet: UNet = ...
 
 # %% tags=["solution"]
 # Provide your guesses as to what, if anything, might go wrong with each of these models:
@@ -475,7 +475,7 @@ best_unet: UNet = ...
 #
 # unetD: barely any depth to this unet. It should train and give you what you want, I just wouldn't expect good performance
 
-best_unet = unetA
+favorite_unet: UNet = unetA
 
 # %% [markdown]
 # <hr style="height:2px;">
