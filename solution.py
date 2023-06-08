@@ -128,7 +128,7 @@ show_one_image(Path(...))
 # show image
 show_one_image(
     Path(
-        "nuclei_train_data/003cee89357d9fe13516167fd67b609a164651b21934585648c740d2c3d86dc1/image.tif"
+        "nuclei_train_data/f29fd9c52e04403cd2c7d43b6fe2479292e53b2f61969d25256d2d2aca7c6a81/image.tif"
     )
 )
 
