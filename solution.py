@@ -316,7 +316,7 @@ class UNet(nn.Module):
     # the model implementation with different architecture elements
 
     # Convolutional block for single layer of the decoder / encoder
-    # we apply to 2d convolutions with relu activation
+    # we apply two 2d convolutions with relu activation
     def _conv_block(self, in_channels, out_channels):
         return nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
