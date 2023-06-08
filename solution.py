@@ -202,6 +202,18 @@ class NucleiDataset(Dataset):
 # Hint: use the `len` function and `[]` indexing defined by `__len__` and `__get_index__` in the Dataset class to fill in the function below
 
 
+# %%
+def show_random_dataset_image(dataset):
+    idx = ...
+    img, mask = ...
+    f, axarr = plt.subplots(1, 2)  # make two plots on one figure
+    axarr[0].imshow(img[0])  # show the image
+    axarr[1].imshow(mask[0], interpolation=None)  # show the masks
+    _ = [ax.axis("off") for ax in axarr]  # remove the axes
+    print("Image size is %s" % {img[0].shape})
+    plt.show()
+
+
 # %% tags=["solution"]
 def show_random_dataset_image(dataset):
     idx = np.random.randint(0, len(dataset))  # take a random sample
