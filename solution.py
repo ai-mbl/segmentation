@@ -803,7 +803,7 @@ for epoch in range(n_epochs):
         log_interval=5,
         tb_logger=logger,
     )
-    step = epoch * len(train_loader.dataset)
+    step = epoch * num_train_pairs
     # validate
     validate(model, val_loader, loss_function, metric, step=step, tb_logger=logger)
 
@@ -988,7 +988,7 @@ for epoch in range(n_epochs):
         log_interval=5,
         tb_logger=logger,
     )
-    step = epoch * len(train_loader.dataset)
+    step = epoch * num_train_pairs
     validate(model, val_loader, loss_function, metric, step=step, tb_logger=logger)
 
 
@@ -1021,7 +1021,7 @@ for epoch in range(n_epochs):
         log_interval=5,
         tb_logger=logger,
     )
-    step = epoch * len(train_loader.dataset)
+    step = epoch * num_train_pairs
     validate(model, val_loader, torch.nn.BCELoss, metric, step=step, tb_logger=logger)
 
 
@@ -1071,7 +1071,7 @@ for epoch in range(n_epochs):
         log_interval=5,
         tb_logger=logger,
     )
-    step = epoch * len(train_loader.dataset)
+    step = epoch * num_train_pairs
     validate(net, val_loader, dice_loss, metric, step=step, tb_logger=logger)
 
 
@@ -1104,7 +1104,7 @@ for epoch in range(n_epochs):
         log_interval=5,
         tb_logger=logger,
     )
-    step = epoch * len(train_loader.dataset)
+    step = epoch * num_train_pairs
     validate(net, val_loader, dice_loss, metric, step=step, tb_logger=logger)
 
 
@@ -1137,7 +1137,7 @@ for epoch in range(n_epochs):
         log_interval=5,
         tb_logger=logger,
     )
-    step = epoch * len(train_loader.dataset)
+    step = epoch * num_train_pairs
     validate(net, val_loader, dice_loss, metric, step=step, tb_logger=logger)
 
 
