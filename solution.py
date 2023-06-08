@@ -439,7 +439,7 @@ unetD = torch.nn.Sequential(
 )
 
 
-# %% [markdown] tags=["solution"]
+# %%
 # Provide your guesses as to what, if anything, might go wrong with each of these models:
 #
 # unetA: The correct unet.
@@ -450,8 +450,19 @@ unetD = torch.nn.Sequential(
 #
 # unetD: barely any depth to this unet. It should train and give you what you want, I just wouldn't expect good performance
 
-# %%
-# TODO: choose your model!
+best_unet: UNet = ...
+
+# %% tags=["solution"]
+# Provide your guesses as to what, if anything, might go wrong with each of these models:
+#
+# unetA: The correct unet.
+#
+# unetB: Too deep. You won't be able to train with input size 256 since the lowest level will get zero sized tensors.
+#
+# unetC: A classic mistake putting a Sigmoid after a Relu activation. You will never predict anything < 0.5
+#
+# unetD: barely any depth to this unet. It should train and give you what you want, I just wouldn't expect good performance
+
 best_unet = unetA
 
 # %% [markdown]
@@ -468,6 +479,10 @@ best_unet = unetA
 # <div class="alert alert-block alert-info">
 #     <b>Task 4.1</b>: implement your loss (or take one from pytorch):
 # </div>
+
+# %%
+# implement your loss here or initialize the one of your choice from pytorch
+loss_function: torch.nn.Module = ...
 
 # %% tags=["solution"]
 # implement your loss here or initialize the one of your choice from pytorch
