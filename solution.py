@@ -963,7 +963,7 @@ logger = SummaryWriter('runs/Unet')
 
 # %%
 # Use the unet you expect to work the best!
-model = best_unet
+model = favorite_unet
 
 # use adam optimizer
 optimizer = torch.optim.Adam(model.parameters())
