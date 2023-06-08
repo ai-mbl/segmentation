@@ -8,6 +8,11 @@
 # Written by Valentyna Zinchenko, Constantin Pape and William Patton.
 
 # %% [markdown]
+# <div class="alert alert-danger">
+# Please use kernel 05-image-segmentation for this exercise.
+# </div>
+
+# %% [markdown]
 # Our goal is to produce a model that can take an image as input and produce a segmentation as shown in this table
 #
 # | Image | Mask |
