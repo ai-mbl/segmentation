@@ -500,6 +500,7 @@ loss_function: torch.nn.Module = ...
 # implement your loss here or initialize the one of your choice from pytorch
 loss_function: torch.nn.Module = nn.BCELoss()
 
+# %%
 # loss function sanity check:
 target = torch.tensor([0.0, 1.0])
 good_prediction = torch.tensor([0.01, 0.99])
