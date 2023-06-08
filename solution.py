@@ -60,13 +60,17 @@ from torchvision import transforms
 list([x for x in Path().iterdir() if x.is_dir()])
 
 # %% [markdown]
-# __Task 2.1__: Explore the contents of both folders. Running `ls your_folder_name`
-# should display you what is stored in the folder of your interest.
+
+# <div class="alert alert-block alert-info">
+#     <b>Task 2.1</b>: Explore the contents of both folders. Running `ls your_folder_name`
+#     should display you what is stored in the folder of your interest.
 #
-# You should be familiar with how are the images stored and the storage format.
-# Questions:
-# 1) How many image/mask pairs are there in the training/validation set?
-# 2) What is the file type of the images/masks?
+#     You should be familiar with how are the images stored and the storage format.
+#     Questions:
+#     1) How many image/mask pairs are there in the training/validation set?
+#     2) What is the file type of the images/masks?
+# </div>
+
 
 # %%
 # Write your answers here:
@@ -95,9 +99,11 @@ image_file_type = ".tif"
 mask_file_type = ".tif"
 
 # %% [markdown]
-# __Task 2.2__: Visualize the image associated with the following mask:
+# <div class="alert alert-block alert-info">
+#     <b>Task 2.2</b>: Visualize the image associated with the following mask:
 #
-# Hint: you can use the following function to display an image:
+#     Hint: you can use the following function to display an image:
+# </div>
 
 
 # %%
