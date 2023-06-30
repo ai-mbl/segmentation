@@ -600,14 +600,13 @@ class DiceCoefficient(nn.Module):
 # %%
 dice = DiceCoefficient()
 target = torch.tensor([0.0, 1.0])
-bad_prediction1 = torch.tensor([1.0, 1.0])
-bad_prediction2 = torch.tensor([0.0, 0.0])
+good_prediction = torch.tensor([0.0, 1.0])
+bad_prediction = torch.tensor([0.0, 0.0])
 wrong_prediction = torch.tensor([1.0, 0.0])
 
-assert dice(good_prediction, target) == 1.0
-assert dice(bad_prediction1, target) == 0.5
-assert dice(bad_prediction2, target) == 0.0
-assert dice(wrong_prediction, target) == 0.0
+assert dice(good_prediction, target) == 1.0, dice(good_prediction, target)
+assert dice(bad_prediction, target) == 0.0, dice(bad_prediction, target)
+assert dice(wrong_prediction, target) == 0.0, dice(wrong_prediction, target)
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
