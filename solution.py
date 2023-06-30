@@ -1134,6 +1134,8 @@ optimizer = torch.optim.Adam(model.parameters())
 
 metric = DiceCoefficient()
 
+loss = torch.nn.BCELoss()
+
 logger = SummaryWriter("runs/UNet5layers")
 
 # %% tags=["solution"]
@@ -1144,6 +1146,8 @@ model = UNet(1, 1, depth=5, final_activation=nn.Sigmoid())
 optimizer = torch.optim.Adam(model.parameters())
 
 metric = DiceCoefficient()
+
+loss = torch.nn.BCELoss()
 
 logger = SummaryWriter("runs/UNet5layers")
 
@@ -1157,13 +1161,13 @@ for epoch in range(n_epochs):
         model,
         train_loader,
         optimizer=optimizer,
-        loss_function=torch.nn.BCELoss,
+        loss_function=loss,
         epoch=epoch,
         log_interval=5,
         tb_logger=logger,
     )
     step = epoch * num_train_pairs
-    validate(model, val_loader, torch.nn.BCELoss, metric, step=step, tb_logger=logger)
+    validate(model, val_loader, loss, metric, step=step, tb_logger=logger)
 
 
 # %% [markdown]
