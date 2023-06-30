@@ -1179,24 +1179,22 @@ for epoch in range(n_epochs):
 
 
 # %%
-class Invert(nn.Module):
-    """
-    This layer will simply negate the input with an optional offset.
-    We support an optional offset because it is common to have 0 as
-    the optimal loss. Since the optimal dice coefficient is 1, it is
-    convenient to get 1 - dice_coefficient as our loss.
-
-    You could leave off the offset and simply have -1 as your optimal loss.
-    """
+class DiceLoss(nn.Module):
+    """ """
 
     def __init__(self, offset: float = 1):
+        super().__init__()
+        self.dice_coefficient = DiceCoefficient()
+
+    def forward(self, x, y):
         ...
 
 
 # %% tags=["solution"]
-class Invert(nn.Module):
+class DiceLoss(nn.Module):
     """
-    This layer will simply negate the input with an optional offset.
+    This layer will simply compute the dice coefficient and then negate
+    it with an optional offset.
     We support an optional offset because it is common to have 0 as
     the optimal loss. Since the optimal dice coefficient is 1, it is
     convenient to get 1 - dice_coefficient as our loss.
@@ -1206,10 +1204,12 @@ class Invert(nn.Module):
 
     def __init__(self, offset: float = 1):
         super().__init__()
-        self.offset = offset
+        self.offset = torch.nn.Parameter(torch.tensor(offset), requires_grad=False)
+        self.dice_coefficient = DiceCoefficient()
 
-    def forward(self, x):
-        return self.offset - x
+    def forward(self, x, y):
+        coefficient = self.dice_coefficient(x, y)
+        return self.offset - coefficient
 
 
 # %%
@@ -1219,7 +1219,7 @@ dice_loss = ...
 
 # %% tags=["solution"]
 # Now combine the DiceCoefficient layer with the Invert layer to make a Dice Loss
-dice_loss = torch.nn.Sequential(DiceCoefficient(), Invert())
+dice_loss = DiceLoss()
 
 # %%
 # Experiment with Dice Loss
