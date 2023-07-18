@@ -88,24 +88,6 @@ image_file_type = ".tif"
 mask_file_type = ".tif"
 
 # %% [markdown]
-# <div class="alert alert-block alert-warning">
-#     simple hash check to let you know if you got the right answers
-# </div>
-
-# %%
-assert (
-    sum(
-        [
-            hash(num_train_pairs),
-            hash(num_val_pairs),
-            hash(image_file_type),
-            hash(mask_file_type),
-        ]
-    )
-    == 527882130944666052
-)
-
-# %% [markdown]
 # <div class="alert alert-block alert-info">
 #     <p><b>Task 2.2</b>: Visualize the image associated with the following mask:</p>
 #     <p>Hint: you can use the following function to display an image:</p>
