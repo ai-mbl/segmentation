@@ -9,7 +9,7 @@
 
 # %% [markdown]
 # <div class="alert alert-danger">
-# Please use kernel 05-image-segmentation for this exercise.
+# Please use kernel <code>05-image-segmentation</code> for this exercise.
 # </div>
 
 # %% [markdown]
@@ -283,22 +283,22 @@ show_random_dataset_image(augmented_data)
 # <hr style="height:2px;">
 
 # %% [markdown]
-# ## 3) The model: U-net
+# ## 3) The model: U-Net
 #
 # Now we need to define the architecture of the model to use. We will use a [U-Net](https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/) that has proven to steadily outperform the other architectures in segmenting biological and medical images.
 #
 # The image of the model precisely describes all the building blocks you need to use to create it. All of them can be found in the list of PyTorch layers (modules) [here](https://pytorch.org/docs/stable/nn.html#convolution-layers).
 #
-# The U-net has an encoder-decoder structure:
+# The U-Net has an encoder-decoder structure:
 #
 # In the encoder pass, the input image is successively downsampled via max-pooling. In the decoder pass it is upsampled again via transposed convolutions.
 #
-# In adddition, it has skip connections, that bridge the output from an encoder to the corresponding decoder.
+# In addition, it has skip connections, that bridge the output from an encoder to the corresponding decoder.
 
 
 # %%
 class UNet(nn.Module):
-    """UNet implementation
+    """U-Net implementation
     Arguments:
       in_channels: number of input channels
       out_channels: number of output channels
@@ -427,7 +427,7 @@ class UNet(nn.Module):
 # <div class="alert alert-block alert-info">
 #     <b>Task 3.1</b>: Spot the best UNet
 #
-# In the next cell you fill find a series of UNet definitions. Most of them won't work. Some of them will work but not well. One will do well. Can you identify which model is the winner? Unfortunately you can't yet test your hypotheses yet since we have not covered loss functions, optimizers, and train/validation loops.
+# In the next cell you fill find a series of U-Net definitions. Most of them won't work. Some of them will work but not well. One will do well. Can you identify which model is the winner? Unfortunately you can't yet test your hypotheses yet since we have not covered loss functions, optimizers, and train/validation loops.
 #
 # </div>
 
@@ -449,13 +449,13 @@ unetD = torch.nn.Sequential(
 # %%
 # Provide your guesses as to what, if anything, might go wrong with each of these models:
 #
-# unetA: The correct unet.
+# unetA: 
 #
-# unetB: Too deep. You won't be able to train with input size 256 since the lowest level will get zero sized tensors.
+# unetB: 
 #
-# unetC: A classic mistake putting a Sigmoid after a Relu activation. You will never predict anything < 0.5
+# unetC: 
 #
-# unetD: barely any depth to this unet. It should train and give you what you want, I just wouldn't expect good performance
+# unetD: 
 
 favorite_unet: UNet = ...
 
@@ -476,7 +476,7 @@ favorite_unet: UNet = unetA
 # <hr style="height:2px;">
 
 # %% [markdown]
-# ## 4) Loss and distance metrics
+# ## 4) Loss Functions
 #
 # The next step to do would be writing a loss function - a metric that will tell us how close we are to the desired output. This metric should be differentiable, since this is the value to be backpropagated. The are [multiple losses](https://lars76.github.io/2018/09/27/loss-functions-for-segmentation.html) we could use for the segmentation task.
 #
@@ -484,15 +484,15 @@ favorite_unet: UNet = unetA
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-#     <b>Task 4.1</b>: implement your loss (or take one from pytorch):
+#     <b>Task 4.1</b>: implement your loss (or take one from PyTorch):
 # </div>
 
 # %%
-# implement your loss here or initialize the one of your choice from pytorch
+# implement your loss here or initialize the one of your choice from PyTorch
 loss_function: torch.nn.Module = ...
 
 # %% tags=["solution"]
-# implement your loss here or initialize the one of your choice from pytorch
+# implement your loss here or initialize the one of your choice from PyTorch
 loss_function: torch.nn.Module = nn.BCELoss()
 
 # %% [markdown]
@@ -527,7 +527,7 @@ except RuntimeError as e:
     print("Your loss does not support out-of-bounds predictions")
 
 # %% [markdown]
-# We will use the [Dice Coefficeint](https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient) to evaluate the network predictions.
+# We will use the [Dice Coefficient](https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient) to evaluate the network predictions.
 # We can use it for validation if we interpret set $a$ as predictions and $b$ as labels. It is often used to evaluate segmentations with sparse foreground, because the denominator normalizes by the number of foreground pixels.
 # The Dice Coefficient is closely related to Jaccard Index / Intersection over Union.
 
@@ -628,7 +628,7 @@ assert dice(wrong_prediction, target) == 0.0, dice(wrong_prediction, target)
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-#     <b>Task 5.2</b>: fix in all the TODOs to make the train function work. If confused, you can use this [PyTorch tutorial](https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html) as a template
+#     <b>Task 5.2</b>: fix in all the TODOs to make the train function work. If confused, you can use this <a href ="https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html">[PyTorch tutorial] </a> as a template
 # </div>
 
 
@@ -809,11 +809,6 @@ train(
     early_stop=True,
 )
 
-
-# %% [markdown]
-# <div class="alert alert-block alert-info">
-#     <b>Task 5.2</b>: fix in all the TODOs to make the validate function work. If confused, you can use this <a href="https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html">PyTorch tutorial</a> as a template
-# </div>
 
 
 # %%
@@ -1024,7 +1019,7 @@ for epoch in range(n_epochs):
 #
 # 1. Modify and evaluate the following architecture variants of the U-Net:
 #     * use [GroupNorm](https://pytorch.org/docs/stable/nn.html#torch.nn.GroupNorm) to normalize convolutional group inputs
-#     * use more layers in your UNet.
+#     * use more layers in your U-Net.
 #
 # 2. Use the Dice coefficient as loss function. Before we only used it for validation, but it is differentiable and can thus also be used as loss. Compare to the results from exercise 2.
 # Hint: The optimizer we use finds minima of the loss, but the minimal value for the Dice coefficient corresponds to a bad segmentation. How do we need to change the Dice coefficient to use it as loss nonetheless?
@@ -1035,7 +1030,7 @@ for epoch in range(n_epochs):
 # %% [markdown]
 
 # <div class="alert alert-block alert-info">
-#     <b>Task BONUS.1</b>: Group Norm, update the UNet to use a GroupNorm layer
+#     <b>Task BONUS.1</b>: Group Norm, update the U-Net to use a GroupNorm layer
 # </div>
 
 
@@ -1048,7 +1043,7 @@ class UNetGN(UNet):
     # Convolutional block for single layer of the decoder / encoder
     # we apply two 2d convolutions with relu activation
     def _conv_block(self, in_channels, out_channels):
-        # See the original UNet for an example of how to build the convolutional block
+        # See the original U-Net for an example of how to build the convolutional block
         # We want operation -> activation -> normalization (2x)
         # Hint: Group norm takes a "num_groups" argument. Use 8 to match the solution
         return ...
