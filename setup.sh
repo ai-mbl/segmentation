@@ -1,8 +1,10 @@
 # Create environment name based on the exercise name
-mamba create -n 05-image-segmentation python=3.11
+mamba create -n 05-image-segmentation python=3.11 -y
 mamba activate 05-image-segmentation
 # Install additional requirements
-mamba install -c pytorch pytorch jupyter imageio scipy tensorboard torchvision matplotlib cudatoolkit=10.2
+mamba install -c pytorch pytorch jupyter imageio scipy tensorboard torchvision matplotlib cudatoolkit=10.2 ipykernel jupytext -y
+# Build the notebooks
+sh prepare-exercise.sh
 
 # Return to base environment
 mamba activate base
