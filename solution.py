@@ -1,9 +1,9 @@
 # %% [markdown]
-# # Exercise 05 Image Segmentation
+# # Exercise 05: Image Segmentation
 #
 # <hr style="height:2px;">
 #
-# In this notebook, we will train a 2D U-net for nuclei segmentation in the Kaggle Nuclei dataset.
+# In this notebook, we will train a 2D U-Net for nuclei segmentation in the Kaggle Nuclei dataset.
 #
 # Written by Valentyna Zinchenko, Constantin Pape and William Patton.
 
@@ -13,7 +13,7 @@
 # </div>
 
 # %% [markdown]
-# Our goal is to produce a model that can take an image as input and produce a segmentation as shown in this table
+# Our goal is to produce a model that can take an image as input and produce a segmentation as shown in this table.
 #
 # | Image | Mask |
 # | :-: | :-: |
@@ -22,7 +22,7 @@
 # %% [markdown]
 # <hr style="height:2px;">
 #
-# ## 1) The libraries
+# ## The libraries
 
 # %%
 %matplotlib inline
@@ -42,7 +42,7 @@ from torchvision import transforms
 # %% [markdown]
 # <hr style="height:2px;">
 #
-# ## 2) Data loading and preprocessing
+# ## Data Loading and Preprocessing
 
 # %% [markdown]
 # ### Data exploration
@@ -53,7 +53,7 @@ from torchvision import transforms
 # %% [markdown]
 # Make sure that the data was successfully extracted:
 # if everything went fine, you should have folders `nuclei_train_data` and `nuclei_val_data`
-# in your working directory. Lets check if it is the case:
+# in your working directory. Let's check if it is the case:
 
 # %%
 # list all of the directories
@@ -62,9 +62,9 @@ list([x for x in Path().iterdir() if x.is_dir()])
 # %% [markdown]
 
 # <div class="alert alert-block alert-info">
-#     <p><b>Task 2.1</b>: Explore the contents of both folders. Running `ls your_folder_name`
+#     <p><b>Task 1.1: </b>: Explore the contents of both folders. Running `ls your_folder_name`
 #     should display you what is stored in the folder of your interest.</p>
-#     </p>You should be familiar with how are the images stored and the storage format.</p>
+#     </p>You should be familiar with how the images are stored and the storage format.</p>
 #     <b>Questions:</b>
 #     <ol>
 #         <li>How many image/mask pairs are there in the training/validation set?</li>
@@ -89,7 +89,7 @@ mask_file_type = ".tif"
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-#     <p><b>Task 2.2</b>: Visualize the image associated with the following mask:</p>
+#     <p><b>Task 1.2: </b>: Visualize the image associated with the following mask:</p>
 #     <p>Hint: you can use the following function to display an image:</p>
 # </div>
 
@@ -121,7 +121,7 @@ show_one_image(
 )
 
 # %% [markdown]
-# ### Data processing
+# ### Data Processing
 # Making the data accessible for training. What one would normally start with in any machine learning pipeline is writing a dataset - a class that will fetch the training samples. Once you switch to using your own data, you would have to figure out how to fetch the data yourself. Luckily most of the functionality is already provided by PyTorch, but what you need to do is to write a class, that will actually supply the dataloader with training samples - a Dataset.
 #
 # Torch Dataset docs can be found [here](https://pytorch.org/docs/stable/data.html?highlight=dataset#torch.utils.data.Dataset) and a totorial on how to use them can be found [here](https://pytorch.org/tutorials/beginner/data_loading_tutorial.html#dataset-class).
@@ -152,7 +152,7 @@ class NucleiDataset(Dataset):
             [
                 transforms.Grayscale(),  # some of the images are RGB
                 transforms.ToTensor(),
-                transforms.Normalize([0.5], [0.5]),
+                transforms.Normalize([0.5], [0.5]), # 0.5 = mean and 0.5 = variance 
             ]
         )
 
@@ -184,7 +184,7 @@ class NucleiDataset(Dataset):
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-#     <p><b>Task 2.3</b>: Use the defined dataset to show a random image/mask pair</p>
+#     <p><b>Task 1.3</b>: Use the defined dataset to show a random image/mask pair</p>
 #     <p>Hint: use the <code>len</code> function and <code>[]</code> indexing defined by <code>__len__</code> and
 #     <code>__get_index__</code> in the Dataset class to fill in the function below.</p>
 # </div>
@@ -283,7 +283,11 @@ show_random_dataset_image(augmented_data)
 # <hr style="height:2px;">
 
 # %% [markdown]
+<<<<<<< HEAD
+# ## The model: U-Net
+=======
 # ## 3) The model: U-Net
+>>>>>>> 92748e046f0d5445f647fea3031286c1a039db97
 #
 # Now we need to define the architecture of the model to use. We will use a [U-Net](https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/) that has proven to steadily outperform the other architectures in segmenting biological and medical images.
 #
@@ -425,7 +429,7 @@ class UNet(nn.Module):
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-#     <b>Task 3.1</b>: Spot the best UNet
+#     <b>Task 2.1</b>: Spot the best U-Net
 #
 # In the next cell you fill find a series of U-Net definitions. Most of them won't work. Some of them will work but not well. One will do well. Can you identify which model is the winner? Unfortunately you can't yet test your hypotheses yet since we have not covered loss functions, optimizers, and train/validation loops.
 #
@@ -451,11 +455,19 @@ unetD = torch.nn.Sequential(
 #
 # unetA: 
 #
+<<<<<<< HEAD
+# unetB: Too deep! You won't be able to train with input size 256 since the lowest level will get zero sized tensors.
+=======
 # unetB: 
+>>>>>>> 92748e046f0d5445f647fea3031286c1a039db97
 #
 # unetC: 
 #
+<<<<<<< HEAD
+# unetD: Barely any depth to this U-Net. It should train and give you what you want, I just wouldn't expect good performance
+=======
 # unetD: 
+>>>>>>> 92748e046f0d5445f647fea3031286c1a039db97
 
 favorite_unet: UNet = ...
 
@@ -476,7 +488,11 @@ favorite_unet: UNet = unetA
 # <hr style="height:2px;">
 
 # %% [markdown]
+<<<<<<< HEAD
+# ## Loss Function
+=======
 # ## 4) Loss Functions
+>>>>>>> 92748e046f0d5445f647fea3031286c1a039db97
 #
 # The next step to do would be writing a loss function - a metric that will tell us how close we are to the desired output. This metric should be differentiable, since this is the value to be backpropagated. The are [multiple losses](https://lars76.github.io/2018/09/27/loss-functions-for-segmentation.html) we could use for the segmentation task.
 #
@@ -484,7 +500,11 @@ favorite_unet: UNet = unetA
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
+<<<<<<< HEAD
+#     <b>Task 2.2</b>: Implement your loss (or take one from pytorch):
+=======
 #     <b>Task 4.1</b>: implement your loss (or take one from PyTorch):
+>>>>>>> 92748e046f0d5445f647fea3031286c1a039db97
 # </div>
 
 # %%
@@ -534,12 +554,12 @@ except RuntimeError as e:
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-# <b>Task 4.2</b>: Fill in implementation details for the dice coefficient
+# <b>Task 2.3</b>: Fill in implementation details for the Dice Coefficient
 # </div>
 
 
 # %%
-# sorensen dice coefficient implemented in torch
+# Sorensen Dice Coefficient implemented in torch
 # the coefficient takes values in two discrete arrays
 # with values in {0, 1}, and produces a score in [0, 1]
 # where 0 is the worst score, 1 is the best score
@@ -576,7 +596,7 @@ class DiceCoefficient(nn.Module):
 
 # %% [markdown]
 # <div class="alert alert-block alert-warning">
-#     Test your dice loss here, are you getting the right scores?
+#     Test your Dice Loss here, are you getting the right scores?
 # </div>
 
 # %%
@@ -592,7 +612,7 @@ assert dice(wrong_prediction, target) == 0.0, dice(wrong_prediction, target)
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-# <b>Task 4.3</b>: What happes if your predictions are not discrete elements of {0,1}?
+# <b>Task 2.4</b>: What happes if your predictions are not discrete elements of {0,1}?
 #     <ol>
 #         <li>What if the predictions are in range (0,1)?</li>
 #         <li>What if the predictions are in range ($-\infty$,$\infty$)?</li>
@@ -622,13 +642,17 @@ assert dice(wrong_prediction, target) == 0.0, dice(wrong_prediction, target)
 # <hr style="height:2px;">
 
 # %% [markdown]
-# ## 5) Training
+# ## Training
 #
 # Let's start with writing training and validation functions.
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
+<<<<<<< HEAD
+#     <b>Task 3.1</b>: Fix in all the TODOs to make the train function work. If confused, you can use this [PyTorch tutorial](https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html) as a template
+=======
 #     <b>Task 5.2</b>: fix in all the TODOs to make the train function work. If confused, you can use this <a href ="https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html">[PyTorch tutorial] </a> as a template
+>>>>>>> 92748e046f0d5445f647fea3031286c1a039db97
 # </div>
 
 
@@ -810,6 +834,14 @@ train(
 )
 
 
+<<<<<<< HEAD
+# %% [markdown]
+# <div class="alert alert-block alert-info">
+#     <b>Task 3.2</b>: Fix in all the TODOs to make the validate function work. If confused, you can use this <a href="https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html">PyTorch tutorial</a> as a template
+# </div>
+
+=======
+>>>>>>> 92748e046f0d5445f647fea3031286c1a039db97
 
 # %%
 # run validation after training epoch
@@ -978,7 +1010,7 @@ optimizer = torch.optim.Adam(model.parameters())
 # build the dice coefficient metric
 metric = DiceCoefficient()
 
-# train for 25 epochs
+# train for $25$ epochs
 # during the training you can inspect the
 # predictions in the tensorboard
 n_epochs = 25
@@ -1021,8 +1053,8 @@ for epoch in range(n_epochs):
 #     * use [GroupNorm](https://pytorch.org/docs/stable/nn.html#torch.nn.GroupNorm) to normalize convolutional group inputs
 #     * use more layers in your U-Net.
 #
-# 2. Use the Dice coefficient as loss function. Before we only used it for validation, but it is differentiable and can thus also be used as loss. Compare to the results from exercise 2.
-# Hint: The optimizer we use finds minima of the loss, but the minimal value for the Dice coefficient corresponds to a bad segmentation. How do we need to change the Dice coefficient to use it as loss nonetheless?
+# 2. Use the Dice Coefficient as loss function. Before we only used it for validation, but it is differentiable and can thus also be used as loss. Compare to the results from exercise 2.
+# Hint: The optimizer we use finds minima of the loss, but the minimal value for the Dice coefficient corresponds to a bad segmentation. How do we need to change the Dice Coefficient to use it as loss nonetheless?
 #
 # 3. Compare the results of these trainings to the first one. If any of the modifications you've implemented show better results, combine them (e.g. add both GroupNorm and one more layer) and run trainings again.
 # What is the best result you could get?
@@ -1030,7 +1062,11 @@ for epoch in range(n_epochs):
 # %% [markdown]
 
 # <div class="alert alert-block alert-info">
+<<<<<<< HEAD
+#     <b>Task BONUS 4.1</b>: Group Norm, update the U-Net to use a GroupNorm layer
+=======
 #     <b>Task BONUS.1</b>: Group Norm, update the U-Net to use a GroupNorm layer
+>>>>>>> 92748e046f0d5445f647fea3031286c1a039db97
 # </div>
 
 
@@ -1098,7 +1134,7 @@ for epoch in range(n_epochs):
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-#     <b>Task BONUS.2</b>: More Layers
+#     <b>Task BONUS 4.2</b>: More Layers
 # </div>
 
 # %%
@@ -1148,9 +1184,9 @@ for epoch in range(n_epochs):
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-#     <b>Task BONUS.3</b>: Dice Loss
-#     Dice loss is a simple inversion of the dice coefficient.
-#     We already have a dice coefficient implementation, so now we just
+#     <b>Task BONUS 4.3</b>: Dice Loss
+#     Dice Loss is a simple inversion of the Dice Coefficient.
+#     We already have a Dice Coefficient implementation, so now we just
 #     need a layer that can invert it.
 # </div>
 
@@ -1190,12 +1226,12 @@ class DiceLoss(nn.Module):
 
 
 # %%
-# Now combine the DiceCoefficient layer with the Invert layer to make a Dice Loss
+# Now combine the Dice Coefficient layer with the Invert layer to make a Dice Loss
 dice_loss = ...
 
 
 # %% tags=["solution"]
-# Now combine the DiceCoefficient layer with the Invert layer to make a Dice Loss
+# Now combine the Dice Coefficient layer with the Invert layer to make a Dice Loss
 dice_loss = DiceLoss()
 
 # %%
@@ -1232,7 +1268,7 @@ for epoch in range(n_epochs):
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-#     <b>Task BONUS.4</b>: Group Norm + Dice
+#     <b>Task BONUS 4.4</b>: Group Norm + Dice
 # </div>
 
 # %%
@@ -1269,7 +1305,7 @@ for epoch in range(n_epochs):
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-#     <b>Task BONUS.5</b>: Group Norm + Dice + Unet 5 Layers
+#     <b>Task BONUS 4.5</b>: Group Norm + Dice + U-Net 5 Layers
 # </div>
 
 # %%
