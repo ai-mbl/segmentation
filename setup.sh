@@ -4,7 +4,7 @@ eval "$(conda shell.bash hook)"
 mamba create -n 05-image-segmentation python=3.9 -y
 mamba activate 05-image-segmentation
 # Install additional requirements
-mamba install -c pytorch pytorch jupyter imageio scipy tensorboard torchvision matplotlib cudatoolkit=10.2 ipykernel jupytext -y
+mamba install -c pytorch pytorch==1.12.1 jupyter imageio scipy tensorboard torchvision matplotlib cudatoolkit=10.2 ipykernel jupytext -y
 # Build the notebooks
 sh prepare-exercise.sh
 
