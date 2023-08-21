@@ -283,11 +283,7 @@ show_random_dataset_image(augmented_data)
 # <hr style="height:2px;">
 
 # %% [markdown]
-<<<<<<< HEAD
 # ## The model: U-Net
-=======
-# ## 3) The model: U-Net
->>>>>>> 92748e046f0d5445f647fea3031286c1a039db97
 #
 # Now we need to define the architecture of the model to use. We will use a [U-Net](https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/) that has proven to steadily outperform the other architectures in segmenting biological and medical images.
 #
@@ -455,19 +451,11 @@ unetD = torch.nn.Sequential(
 #
 # unetA: 
 #
-<<<<<<< HEAD
-# unetB: Too deep! You won't be able to train with input size 256 since the lowest level will get zero sized tensors.
-=======
 # unetB: 
->>>>>>> 92748e046f0d5445f647fea3031286c1a039db97
 #
 # unetC: 
 #
-<<<<<<< HEAD
-# unetD: Barely any depth to this U-Net. It should train and give you what you want, I just wouldn't expect good performance
-=======
 # unetD: 
->>>>>>> 92748e046f0d5445f647fea3031286c1a039db97
 
 favorite_unet: UNet = ...
 
@@ -488,11 +476,7 @@ favorite_unet: UNet = unetA
 # <hr style="height:2px;">
 
 # %% [markdown]
-<<<<<<< HEAD
 # ## Loss Function
-=======
-# ## 4) Loss Functions
->>>>>>> 92748e046f0d5445f647fea3031286c1a039db97
 #
 # The next step to do would be writing a loss function - a metric that will tell us how close we are to the desired output. This metric should be differentiable, since this is the value to be backpropagated. The are [multiple losses](https://lars76.github.io/2018/09/27/loss-functions-for-segmentation.html) we could use for the segmentation task.
 #
@@ -500,11 +484,7 @@ favorite_unet: UNet = unetA
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-<<<<<<< HEAD
 #     <b>Task 2.2</b>: Implement your loss (or take one from pytorch):
-=======
-#     <b>Task 4.1</b>: implement your loss (or take one from PyTorch):
->>>>>>> 92748e046f0d5445f647fea3031286c1a039db97
 # </div>
 
 # %%
@@ -648,11 +628,7 @@ assert dice(wrong_prediction, target) == 0.0, dice(wrong_prediction, target)
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-<<<<<<< HEAD
 #     <b>Task 3.1</b>: Fix in all the TODOs to make the train function work. If confused, you can use this [PyTorch tutorial](https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html) as a template
-=======
-#     <b>Task 5.2</b>: fix in all the TODOs to make the train function work. If confused, you can use this <a href ="https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html">[PyTorch tutorial] </a> as a template
->>>>>>> 92748e046f0d5445f647fea3031286c1a039db97
 # </div>
 
 
@@ -834,14 +810,11 @@ train(
 )
 
 
-<<<<<<< HEAD
 # %% [markdown]
 # <div class="alert alert-block alert-info">
 #     <b>Task 3.2</b>: Fix in all the TODOs to make the validate function work. If confused, you can use this <a href="https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html">PyTorch tutorial</a> as a template
 # </div>
 
-=======
->>>>>>> 92748e046f0d5445f647fea3031286c1a039db97
 
 # %%
 # run validation after training epoch
@@ -1062,11 +1035,7 @@ for epoch in range(n_epochs):
 # %% [markdown]
 
 # <div class="alert alert-block alert-info">
-<<<<<<< HEAD
 #     <b>Task BONUS 4.1</b>: Group Norm, update the U-Net to use a GroupNorm layer
-=======
-#     <b>Task BONUS.1</b>: Group Norm, update the U-Net to use a GroupNorm layer
->>>>>>> 92748e046f0d5445f647fea3031286c1a039db97
 # </div>
 
 
