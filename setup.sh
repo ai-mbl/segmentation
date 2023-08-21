@@ -1,7 +1,7 @@
 # this seems necessary for the activate call to work
 eval "$(conda shell.bash hook)"
 # Create environment name based on the exercise name
-mamba create -n 05-image-segmentation python=3.11 -y
+mamba create -n 05-image-segmentation python=3.9 -y
 mamba activate 05-image-segmentation
 # Install additional requirements
 mamba install -c pytorch pytorch jupyter imageio scipy tensorboard torchvision matplotlib cudatoolkit=10.2 ipykernel jupytext -y
