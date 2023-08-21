@@ -5,7 +5,7 @@
 Please run the setup script to create the environment for this exercise and download data.
 
 ```bash
-sh setup.sh
+source setup.sh
 ```
 
 When you are ready to start the exercise, make sure you are in your base environment and then run jupyter lab.
