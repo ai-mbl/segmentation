@@ -15,9 +15,10 @@
 # %% [markdown]
 # Our goal is to produce a model that can take an image as input and produce a segmentation as shown in this table.
 #
-# | Image | Mask |
-# | :-: | :-: |
-# | ![image](static/image.png) | ![mask](static/mask.png) |
+# | Image | Mask | Prediction |
+# | :-: | :-: | :-: |
+# | ![image](static/img_0.png) | ![mask](static/mask_0.png) | ![pred](static/pred_0.png) |
+# | ![image](static/img_1.png) | ![mask](static/mask_1.png) | ![pred](static/pred_1.png) |
 
 # %% [markdown]
 # <hr style="height:2px;">
