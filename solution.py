@@ -40,6 +40,10 @@ from torch.utils.tensorboard import SummaryWriter
 import torch.nn as nn
 from torchvision import transforms
 
+# %%
+# make sure gpu is available. Please call a TA if this cell fails
+assert torch.cuda.is_available()
+
 # %% [markdown]
 # <hr style="height:2px;">
 #
@@ -965,9 +969,6 @@ validate(
 # %% [markdown]
 #
 # We want to use GPU to train faster. Make sure GPU is available
-
-# %%
-assert torch.cuda.is_available()
 
 # %%
 # start a tensorboard writer
