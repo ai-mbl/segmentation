@@ -258,6 +258,41 @@ val_loader = DataLoader(val_data, batch_size=5)
 show_random_dataset_image(val_data)
 
 # %% [markdown]
+
+# <div class="alert alert-block alert-info">
+#     <p><b>Task 1.3: </b>: Take some time to think about the data loader and augmentations.</p>
+#     <b>Questions:</b>
+#     <ol>
+#         <li>What variable do you use if you want to augment both image and mask together?</li>
+#         <li>What about if you want to augment just the image?</li>
+#         <li>What are some examples of operations you might want to apply to both?</li>
+#         <li>What are some examples of operations you might want to apply to just the image?</li>
+#         <li>Would you ever want to augment just the mask? If so what operations?</li>
+#     </ol>
+# </div>
+
+
+# %% [markdown]
+# Write your answers here:
+# <ol>
+#     <li></li>
+#     <li></li>
+#     <li></li>
+#     <li></li>
+#     <li></li>
+# </ol>
+
+# %% [markdown] tags=["solution"]
+# Write your answers here:
+# <ol>
+#     <li>transform</li>
+#     <li>img_transform</li>
+#     <li>crop, mirror, transpose, rotate, sheer</li>
+#     <li>noise, contrast adjustment, blur</li>
+#     <li>yes, grow/shrink labels for more/less conservative predictions</li>
+# </ol>
+
+# %% [markdown]
 # <div class="alert alert-block alert-success">
 # <h2> Checkpoint 1 </h2>
 # <p>We will go over the steps up to this point soon. If you have time to spare, consider experimenting
