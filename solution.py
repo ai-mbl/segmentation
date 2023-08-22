@@ -267,7 +267,6 @@ show_random_dataset_image(val_data)
 #         <li>What about if you want to augment just the image?</li>
 #         <li>What are some examples of operations you might want to apply to both?</li>
 #         <li>What are some examples of operations you might want to apply to just the image?</li>
-#         <li>Would you ever want to augment just the mask? If so what operations?</li>
 #     </ol>
 # </div>
 
@@ -275,7 +274,6 @@ show_random_dataset_image(val_data)
 # %% [markdown]
 # Write your answers here:
 # <ol>
-#     <li></li>
 #     <li></li>
 #     <li></li>
 #     <li></li>
@@ -289,7 +287,6 @@ show_random_dataset_image(val_data)
 #     <li>img_transform</li>
 #     <li>crop, mirror, transpose, rotate, sheer</li>
 #     <li>noise, contrast adjustment, blur</li>
-#     <li>yes, grow/shrink labels for more/less conservative predictions</li>
 # </ol>
 
 # %% [markdown]
