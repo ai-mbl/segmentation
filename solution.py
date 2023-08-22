@@ -1,5 +1,5 @@
 # %% [markdown]
-# # Exercise 05: Image Segmentation
+# # Exercise 05: Semantic Segmentation
 #
 # <hr style="height:2px;">
 #
@@ -9,7 +9,7 @@
 
 # %% [markdown]
 # <div class="alert alert-danger">
-# Please use kernel <code>05-image-segmentation</code> for this exercise.
+# Please use kernel <code>05-semantic-segmentation</code> for this exercise.
 # </div>
 
 # %% [markdown]

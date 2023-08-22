@@ -1,4 +1,4 @@
-# Exercise 5: Image Segmentation
+# Exercise 5: Semantic Segmentation
 
 ## Setup
 
