@@ -1196,7 +1196,17 @@ for epoch in range(n_epochs):
 
 # %%
 class DiceLoss(nn.Module):
-    """ """
+    """
+    This layer will simply compute the dice coefficient and then negate
+    it with an optional offset.
+    We support an optional offset because it is common to have 0 as
+    the optimal loss. Since the optimal dice coefficient is 1, it is
+    convenient to get 1 - dice_coefficient as our loss.
+
+    You could leave off the offset and simply have -1 as your optimal loss.
+    We will generalize the use case of dice coefficient to allow input
+    from [0,1] instead of {0,1}.
+    """
 
     def __init__(self, offset: float = 1):
         super().__init__()
@@ -1216,6 +1226,8 @@ class DiceLoss(nn.Module):
     convenient to get 1 - dice_coefficient as our loss.
 
     You could leave off the offset and simply have -1 as your optimal loss.
+    We will generalize the use case of dice coefficient to allow input
+    from [0,1] instead of {0,1}.
     """
 
     def __init__(self, offset: float = 1):
