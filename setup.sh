@@ -1,16 +1,24 @@
-# this seems necessary for the activate call to work
-eval "$(conda shell.bash hook)"
+#!/bin/bash
+
 # Create environment name based on the exercise name
-mamba create -n 05-semantic-segmentation python=3.9 -y
-mamba activate 05-semantic-segmentation
+conda create -n 03-semantic-segmentation python=3.10 -y
+conda activate 03-semantic-segmentation
 # Install additional requirements
-mamba install -c pytorch pytorch==1.12.1 jupyter imageio scipy tensorboard torchvision matplotlib cudatoolkit=10.2 ipykernel jupytext -y
+if [[ "$CONDA_DEFAULT_ENV" == "03-semantic-segmentation" ]]; then
+    echo "Environment activated successfully for package installs"
+    conda install pytorch pytorch-cuda=11.8 jupyter imageio scipy scikit-image tensorboard torchvision matplotlib ipykernel jupytext -c pytorch -c nvidia -y
+    python -m ipykernel install --user --name "03-semantic-segmentation"
+else
+    echo "Failed to activate environment for package installs. Dependencies not installed!"
+fi
+
 # Build the notebooks
 sh prepare-exercise.sh
 
 # Return to base environment
-mamba activate base
+conda deactivate
+conda activate base
 
 # Download and extract data, etc.
-wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1L344AoTTx-mu9MyNt-2iZ5A3ww3tC_Zp' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1L344AoTTx-mu9MyNt-2iZ5A3ww3tC_Zp" -O kaggle_data.zip && rm -rf /tmp/cookies.txt
+gdown -O kaggle_data.zip 1ahuduC_4Ex84R7qKNRzAY6PiLRWX_J3I
 unzip -u -qq kaggle_data.zip && rm kaggle_data.zip
