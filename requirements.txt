@@ -1,0 +1,14 @@
+black
+gdown
+torch
+torchvision
+jupyter 
+imageio
+scipy
+scikit-image
+tensorboard
+matplotlib
+ipykernel
+jupytext
+numpy<2
+dlmbl_unet @ git+https://github.com/dlmbl/dlmbl-unet

@@ -1,4 +1,4 @@
-# Exercise 5: Semantic Segmentation
+# Exercise 3: Semantic Segmentation
 
 :memo: **In this exercise, you will:**
 1. Prepare the U-Net baseline model and validation dataset.
