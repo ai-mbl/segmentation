@@ -64,7 +64,7 @@ from local import (
     show_random_augmentation_comparison,
     train,
 )
-from unet import UNet
+from dlmbl_unet import ConvBlock, UNet
 
 
 # %% [markdown]
@@ -432,6 +432,7 @@ def validate(
 # %%
 
 # Evaluate your model here
+validate(...)
 
 # %% tags=["solution"]
 
@@ -633,7 +634,11 @@ logger = SummaryWriter("runs/Unet")
 # %%
 # Use the unet you expect to work the best!
 model = UNet(
-    depth=4, in_channels=1, out_channels=1, num_fmaps=2, final_activation="Sigmoid"
+    depth=4,
+    in_channels=1,
+    out_channels=1,
+    num_fmaps=2,
+    final_activation=torch.nn.Sigmoid(),
 ).to(device)
 
 # use adam optimizer
@@ -701,47 +706,131 @@ for epoch in range(n_epochs):
 # %% [markdown]
 #
 # <div class="alert alert-block alert-info">
-#     <b>Task BONUS.1</b>: Group Norm, update the U-Net to use a GroupNorm layer
+#     <b>Task BONUS.1</b>: Update the ConvBlock class to include GroupNorm layers
 # </div>
 
 
 # %%
-class UNetGN(UNet):
+from typing import Optional, Literal
+
+
+class ConvBlockGN(ConvBlock):
     """
-    A subclass of UNet that implements GroupNorm in each convolutional block
+    A subclass of ConvBlock that includes GroupNorm after activation
     """
 
-    # Convolutional block for single layer of the decoder / encoder
-    # we apply two 2d convolutions with relu activation
-    def _conv_block(self, in_channels, out_channels):
-        # See the original U-Net for an example of how to build the convolutional block
-        # We want operation -> activation -> normalization (2x)
-        # Hint: Group norm takes a "num_groups" argument. Use 8 to match the solution
-        return ...
+    def __init__(
+        self,
+        in_channels: int,
+        out_channels: int,
+        kernel_size: int,
+        padding: Literal["same", "valid"] = "same",
+        ndim: Literal[2, 3] = 2,
+    ):
+        super().__init__(
+            in_channels=in_channels,
+            out_channels=out_channels,
+            kernel_size=kernel_size,
+            padding=padding,
+            ndim=ndim,
+        )
+
+        # Convolutional block for single layer of the decoder / encoder
+        # we apply two 2d convolutions with relu activation
+        self.conv_pass = torch.nn.Sequential(
+            # See the original U-Net for an example of how to build the convolutional block
+            # We want operation -> activation -> normalization (2x)
+            # Hint: Group norm takes a "num_groups" argument. Use 8 to match the solution
+            ...
+        )
 
 
 # %% tags=["solution"]
-class UNetGN(UNet):
+from typing import Optional, Literal
+
+
+class ConvBlockGN(ConvBlock):
     """
-    A subclass of UNet that implements GroupNorm in each convolutional block
+    A subclass of ConvBlock that includes GroupNorm after activation
     """
 
-    # Convolutional block for single layer of the decoder / encoder
-    # we apply two 2d convolutions with relu activation
-    def _conv_block(self, in_channels, out_channels):
-        return nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.GroupNorm(8, out_channels),
-            nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.GroupNorm(8, out_channels),
+    def __init__(
+        self,
+        in_channels: int,
+        out_channels: int,
+        kernel_size: int,
+        padding: Literal["same", "valid"] = "same",
+        ndim: Literal[2, 3] = 2,
+    ):
+        super().__init__(
+            in_channels=in_channels,
+            out_channels=out_channels,
+            kernel_size=kernel_size,
+            padding=padding,
+            ndim=ndim,
+        )
+
+        # Convolutional block for single layer of the decoder / encoder
+        # we apply two 2d convolutions with relu activation
+        self.conv_pass = torch.nn.Sequential(
+            self.convops[ndim](
+                in_channels, out_channels, kernel_size=kernel_size, padding=padding
+            ),
+            torch.nn.ReLU(),
+            torch.nn.GroupNorm(8, out_channels),
+            self.convops[ndim](
+                out_channels, out_channels, kernel_size=kernel_size, padding=padding
+            ),
+            torch.nn.ReLU(),
+            torch.nn.GroupNorm(8, out_channels),
         )
 
 
 # %%
+class UNetGN(UNet):
+    """
+    A subclass of UNet that implements GroupNorm in each convolutional block
+    """
+
+    def __init__(
+        self,
+        depth: int,
+        in_channels: int,
+        out_channels: int = 1,
+        final_activation: Optional[torch.nn.Module] = None,
+        num_fmaps: int = 64,
+        fmap_inc_factor: int = 2,
+        downsample_factor: int = 2,
+        kernel_size: int = 3,
+        padding: Literal["same", "valid"] = "same",
+        upsample_mode: str = "nearest",
+        ndim: Literal[2, 3] = 2,
+    ):
+        super().__init__(
+            depth=depth,
+            in_channels=in_channels,
+            out_channels=out_channels,
+            final_activation=final_activation,
+            num_fmaps=num_fmaps,
+            fmap_inc_factor=fmap_inc_factor,
+            downsample_factor=downsample_factor,
+            kernel_size=kernel_size,
+            padding=padding,
+            upsample_mode=upsample_mode,
+            ndim=ndim,
+        )
+
+        # replace with updated convolutional block
+        self.conv_block = ConvBlockGN
+
+
+# %%
 model = UNetGN(
-    depth=4, in_channels=1, out_channels=1, num_fmaps=2, final_activation="Sigmoid"
+    depth=4,
+    in_channels=1,
+    out_channels=1,
+    num_fmaps=2,
+    final_activation=torch.nn.Sigmoid(),
 ).to(device)
 
 optimizer = torch.optim.Adam(model.parameters())
@@ -800,7 +889,11 @@ logger = SummaryWriter("runs/UNet5layers")
 # Experiment with more layers. For example UNet with depth 5
 
 model = UNet(
-    depth=5, in_channels=1, out_channels=1, num_fmaps=2, final_activation="Sigmoid"
+    depth=5,
+    in_channels=1,
+    out_channels=1,
+    num_fmaps=2,
+    final_activation=torch.nn.Sigmoid(),
 ).to(device)
 
 optimizer = torch.optim.Adam(model.parameters())
@@ -894,7 +987,11 @@ loss_func = ...
 # %% tags=["solution"]
 # Experiment with Dice Loss
 net = UNet(
-    depth=4, in_channels=1, out_channels=1, num_fmaps=2, final_activation="Sigmoid"
+    depth=4,
+    in_channels=1,
+    out_channels=1,
+    num_fmaps=2,
+    final_activation=torch.nn.Sigmoid(),
 ).to(device)
 optimizer = torch.optim.Adam(net.parameters())
 metric = DiceCoefficient()
@@ -936,7 +1033,11 @@ logger = SummaryWriter("runs/UNetGN_diceloss")
 
 # %% tags=["solution"]
 net = UNetGN(
-    depth=4, in_channels=1, out_channels=1, num_fmaps=2, final_activation="Sigmoid"
+    depth=4,
+    in_channels=1,
+    out_channels=1,
+    num_fmaps=2,
+    final_activation=torch.nn.Sigmoid(),
 ).to(device)
 optimizer = torch.optim.Adam(net.parameters())
 metric = DiceCoefficient()
@@ -976,7 +1077,11 @@ loss_func = ...
 
 # %% tags=["solution"]
 net = UNetGN(
-    depth=5, in_channels=1, out_channels=1, num_fmaps=2, final_activation="Sigmoid"
+    depth=5,
+    in_channels=1,
+    out_channels=1,
+    num_fmaps=2,
+    final_activation=torch.nn.Sigmoid(),
 ).to(device)
 optimizer = torch.optim.Adam(net.parameters())
 metric = DiceCoefficient()
@@ -1000,3 +1105,5 @@ for epoch in range(n_epochs):
     validate(
         net, val_loader, loss_func, metric, step=step, tb_logger=logger, device=device
     )
+
+# %%
