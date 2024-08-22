@@ -1,3 +1,18 @@
+# ---
+# jupyter:
+#   jupytext:
+#     cell_metadata_filter: all
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.16.4
+#   kernelspec:
+#     display_name: 03-semantic-segmentation
+#     language: python
+#     name: python3
+# ---
+
 # %% [markdown]
 # # Semantic Segmentation
 #
@@ -33,7 +48,10 @@
 
 # %%
 # %matplotlib inline
-# %load_ext tensorboard
+# %load_ext autoreload
+# %autoreload 2
+
+import subprocess
 import torch
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
@@ -628,7 +646,26 @@ except RuntimeError as e:
 # Now lets start experimenting. Start a tensorboard logger to keep track of experiments.
 # start a tensorboard writer
 logger = SummaryWriter("runs/Unet")
-# %tensorboard --logdir runs
+
+
+# Function to find an available port and launch TensorBoard on the browser
+def launch_tensorboard(log_dir):
+    import socket
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(("", 0))
+        port = s.getsockname()[1]
+
+    tensorboard_cmd = f"tensorboard --logdir={log_dir} --port={port}"
+    process = subprocess.Popen(tensorboard_cmd, shell=True)
+    print(
+        f"TensorBoard started at http://localhost:{port}. \n"
+        "If you are using VSCode remote session, forward the port using the PORTS tab next to TERMINAL."
+    )
+    return process
+
+
+launch_tensorboard("runs")
 
 
 # %%
@@ -706,123 +743,47 @@ for epoch in range(n_epochs):
 # %% [markdown]
 #
 # <div class="alert alert-block alert-info">
-#     <b>Task BONUS.1</b>: Update the ConvBlock class to include GroupNorm layers
+#     <b>Task BONUS.1</b>: Modify the ConvBlockGN class in bonus_unet.py to include GroupNorm layers. Then update the UNetGN class to use the modified ConvBlock
 # </div>
 
 
 # %%
-from typing import Optional, Literal
+# See the original U-Net for an example of how to build the convolutional block
+# We want operation -> activation -> normalization (2x)
+# Hint: Group norm takes a "num_groups" argument. Use 2 to match the solution
+# Task: Modify the bonus_unet.py file as needed and save the changes before you run this cell
 
-
-class ConvBlockGN(ConvBlock):
-    """
-    A subclass of ConvBlock that includes GroupNorm after activation
-    """
-
-    def __init__(
-        self,
-        in_channels: int,
-        out_channels: int,
-        kernel_size: int,
-        padding: Literal["same", "valid"] = "same",
-        ndim: Literal[2, 3] = 2,
-    ):
-        super().__init__(
-            in_channels=in_channels,
-            out_channels=out_channels,
-            kernel_size=kernel_size,
-            padding=padding,
-            ndim=ndim,
-        )
-
-        # Convolutional block for single layer of the decoder / encoder
-        # we apply two 2d convolutions with relu activation
-        self.conv_pass = torch.nn.Sequential(
-            # See the original U-Net for an example of how to build the convolutional block
-            # We want operation -> activation -> normalization (2x)
-            # Hint: Group norm takes a "num_groups" argument. Use 8 to match the solution
-            ...
-        )
-
+from bonus_unet import ConvBlockGN, UNetGN
 
 # %% tags=["solution"]
-from typing import Optional, Literal
+"""
+Changes to make to the ConvBlockGN class in bonus_unet.py:
 
-
-class ConvBlockGN(ConvBlock):
-    """
-    A subclass of ConvBlock that includes GroupNorm after activation
-    """
-
-    def __init__(
-        self,
-        in_channels: int,
-        out_channels: int,
-        kernel_size: int,
-        padding: Literal["same", "valid"] = "same",
-        ndim: Literal[2, 3] = 2,
-    ):
-        super().__init__(
-            in_channels=in_channels,
-            out_channels=out_channels,
-            kernel_size=kernel_size,
-            padding=padding,
-            ndim=ndim,
-        )
-
-        # Convolutional block for single layer of the decoder / encoder
-        # we apply two 2d convolutions with relu activation
         self.conv_pass = torch.nn.Sequential(
-            self.convops[ndim](
+            ...
+        )
+    becomes:
+        self.conv_pass = torch.nn.Sequential(
+            convops[ndim](
                 in_channels, out_channels, kernel_size=kernel_size, padding=padding
             ),
             torch.nn.ReLU(),
-            torch.nn.GroupNorm(8, out_channels),
-            self.convops[ndim](
+            torch.nn.GroupNorm(2, out_channels),
+            convops[ndim](
                 out_channels, out_channels, kernel_size=kernel_size, padding=padding
             ),
             torch.nn.ReLU(),
-            torch.nn.GroupNorm(8, out_channels),
+            torch.nn.GroupNorm(2, out_channels),
         )
 
 
-# %%
-class UNetGN(UNet):
-    """
-    A subclass of UNet that implements GroupNorm in each convolutional block
-    """
+Changes to make to the UNetGN class in bonus_unet.py:
 
-    def __init__(
-        self,
-        depth: int,
-        in_channels: int,
-        out_channels: int = 1,
-        final_activation: Optional[torch.nn.Module] = None,
-        num_fmaps: int = 64,
-        fmap_inc_factor: int = 2,
-        downsample_factor: int = 2,
-        kernel_size: int = 3,
-        padding: Literal["same", "valid"] = "same",
-        upsample_mode: str = "nearest",
-        ndim: Literal[2, 3] = 2,
-    ):
-        super().__init__(
-            depth=depth,
-            in_channels=in_channels,
-            out_channels=out_channels,
-            final_activation=final_activation,
-            num_fmaps=num_fmaps,
-            fmap_inc_factor=fmap_inc_factor,
-            downsample_factor=downsample_factor,
-            kernel_size=kernel_size,
-            padding=padding,
-            upsample_mode=upsample_mode,
-            ndim=ndim,
-        )
+    lines 231 and 241: change `ConvBlock` to `ConvBlockGN`
 
-        # replace with updated convolutional block
-        self.conv_block = ConvBlockGN
+"""
 
+from bonus_unet import ConvBlockGN, UNetGN
 
 # %%
 model = UNetGN(
@@ -1028,8 +989,6 @@ net = ...
 optimizer = ...
 metric = ...
 loss_func = ...
-
-logger = SummaryWriter("runs/UNetGN_diceloss")
 
 # %% tags=["solution"]
 net = UNetGN(
