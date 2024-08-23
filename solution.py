@@ -82,7 +82,7 @@ from local import (
     show_random_augmentation_comparison,
     train,
 )
-from dlmbl_unet import ConvBlock, UNet
+from dlmbl_unet import UNet
 
 
 # %% [markdown]
@@ -753,7 +753,7 @@ for epoch in range(n_epochs):
 # Hint: Group norm takes a "num_groups" argument. Use 2 to match the solution
 # Task: Modify the bonus_unet.py file as needed and save the changes before you run this cell
 
-from bonus_unet import ConvBlockGN, UNetGN
+from bonus_unet import UNetGN
 
 # %% tags=["solution"]
 """
@@ -783,7 +783,7 @@ Changes to make to the UNetGN class in bonus_unet.py:
 
 """
 
-from bonus_unet import ConvBlockGN, UNetGN
+from bonus_unet import UNetGN
 
 # %%
 model = UNetGN(
