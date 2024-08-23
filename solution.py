@@ -262,8 +262,8 @@ assert dice(wrong_prediction, target) == 0.0, dice(wrong_prediction, target)
 # <div class="alert alert-block alert-info">
 # <b>Task 1.2</b>: What happens if your predictions are not discrete elements of {0,1}?
 #     <ol>
-#         <li>What if the predictions are in range (0,1)?</li>
-#         <li>What if the predictions are in range ($-\infty$,$\infty$)?</li>
+#         <li>What happens to the Dice score if the predictions are in range (0,1)?</li>
+#         <li>What happens to the Dice score if the predictions are in range ($-\infty$,$\infty$)?</li>
 #     </ol>
 # </div>
 
@@ -283,7 +283,7 @@ assert dice(wrong_prediction, target) == 0.0, dice(wrong_prediction, target)
 
 # %% [markdown]
 # <div class="alert alert-block alert-success">
-#     <h2>Checkpoint 1.1 </h2>
+#     <h2>Checkpoint 1 </h2>
 #
 # This is a good place to stop for a moment. If you have extra time look into some extra
 # evaluation functions or try to implement your own without hints.
@@ -467,7 +467,7 @@ validate(
 
 # %% [markdown]
 # <div class="alert alert-block alert-success">
-#     <h2>Checkpoint 1.2</h2>
+#     <h2>Checkpoint 2</h2>
 #
 # We have finished writing the evaluation function. We will go over the code up to this point soon.
 # Next we will work on augmentations to improve the generalization of our model.
