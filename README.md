@@ -16,8 +16,4 @@ Please run the setup script to create the environment for this exercise and down
 source setup.sh
 ```
 
-When you are ready to start the exercise, make sure you are in your base environment and then run jupyter lab.
-```bash
-mamba activate base
-jupyter lab
-```
+Then run the `exercise.ipynb` notebook in your preferred tool.
