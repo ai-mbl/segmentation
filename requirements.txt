@@ -11,4 +11,6 @@ matplotlib
 ipykernel
 jupytext
 numpy<2
+cellpose
 dlmbl_unet @ git+https://github.com/dlmbl/dlmbl-unet
+mwatershed
