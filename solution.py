@@ -8,7 +8,7 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.17.2
 #   kernelspec:
-#     display_name: 03-semantic-segmentation
+#     display_name: 03-segmentation
 #     language: python
 #     name: python3
 # ---
@@ -76,8 +76,8 @@ assert torch.cuda.is_available()
 # ## Section 0: What we have so far
 #
 # You have already implemented a U-Net architecture in the previous exercise. We will use it as a starting point for this exercise.
-# You should also alredy have the dataset and the dataloader implemented, along with a simple train loop with MSELoss.
-# Lets go ahead and visualize some of the data along with some predictions to see how we are doing.
+# You should also already have the dataset and the dataloader implemented, along with a simple train loop with MSELoss.
+# Let us go ahead and visualize some of the data along with some predictions to see how we are doing.
 
 # %% [markdown]
 # Our goal is to produce a model that can take an image as input and produce a segmentation as shown in this table.
@@ -121,14 +121,14 @@ def salt_and_pepper_noise(image, amount=0.05):
         torch.randint(0, i - 1, [num_salt]) if i > 1 else [0] * num_salt
         for i in image.shape
     ]
-    out[coords] = 1
+    out[tuple(coords)] = 1
 
     # Add Pepper noise
     coords = [
         torch.randint(0, i - 1, [num_pepper]) if i > 1 else [0] * num_pepper
         for i in image.shape
     ]
-    out[coords] = 0
+    out[tuple(coords)] = 0
 
     return out
 
@@ -325,6 +325,22 @@ def validate(
     tb_logger=None,
     device=None,
 ):
+    """
+    Evaluate model performance on validation data.
+
+    Args:
+        model: PyTorch model to validate
+        loader: DataLoader containing validation data
+        loss_function: Loss function to compute validation loss between prediction and target.
+        metric: Metric function to evaluate segmentation against ground-truth labels.
+        step: Current training step for logging (required if tb_logger provided)
+        tb_logger: TensorBoard logger for recording metrics (optional)
+        device: Torch device to run validation on (optional)
+
+    Returns:
+        None
+    """
+
     if device is None:
         # You can pass in a device or we will default to using
         # the gpu. Feel free to try training on the cpu to see
@@ -395,6 +411,22 @@ def validate(
     tb_logger=None,
     device=None,
 ):
+    """
+    Evaluate model performance on validation data.
+
+    Args:
+        model: PyTorch model to validate
+        loader: DataLoader containing validation data
+        loss_function: Loss function to compute validation loss between prediction and target.
+        metric: Metric function to evaluate segmentation against ground-truth labels.
+        step: Current training step for logging (required if tb_logger provided)
+        tb_logger: TensorBoard logger for recording metrics (optional)
+        device: Torch device to run validation on (optional)
+
+    Returns:
+        None
+    """
+
     if device is None:
         # You can pass in a device or we will default to using
         # the gpu. Feel free to try training on the cpu to see
@@ -492,7 +524,7 @@ validate(
 # ## Section 2: Augmentation
 # Often our models will perform better on the evaluation dataset if we augment our training data.
 # This is because the model will be exposed to a wider variety of data that will hopefully help
-# cover the full distribution of data in the validation set. We will use the `torchvision.transforms`
+# cover the full distribution of data in the validation set. We will use the `torchvision.transforms.v2` modules
 # to augment our data.
 
 
@@ -518,8 +550,8 @@ train_data = NucleiDataset("nuclei_train_data", transforms_v2.RandomCrop(256))
 
 # Note this augmented data uses extreme augmentations for visualization. It will not train well
 example_augmented_data = NucleiDataset(
-    "nuclei_train_data",
-    transforms_v2.Compose(
+    root_dir="nuclei_train_data",
+    transform=transforms_v2.Compose(
         [transforms_v2.RandomRotation(45), transforms_v2.RandomCrop(256)]
     ),
     img_transform=transforms_v2.Compose([transforms_v2.GaussianBlur(21, sigma=10.0)]),
@@ -730,7 +762,7 @@ for epoch in range(n_epochs):
 # <div class="alert alert-block alert-success">
 #     <h2>Checkpoint 3</h2>
 #
-# This is the end of the guided exercise. We will go over all of the code up until this point shortly.
+# This is the end of Part I (semantic segmentation). We will go over all of the code up until this point shortly.
 # While you wait you are encouraged to try alternative loss functions, evaluation metrics, augmentations,
 # and networks. After this come additional exercises if you are interested and have the time.
 #
@@ -1153,9 +1185,8 @@ label_cmap = ListedColormap(colors)
 # %% [markdown]
 # We will now add the code for preparing our data to learn the signed distance transform.
 
+
 # %%
-
-
 def compute_sdt(labels: np.ndarray, scale: int = 5):
     """Function to compute a signed distance transform."""
     dims = len(labels.shape)
@@ -1455,7 +1486,7 @@ plot_two(img, sdt[0], label="SDT")
 # documentation here: https://pytorch.org/vision/stable/transforms.html#v2-api-reference-recommended
 # Visualize the output to confirm your dataset is working.
 
-train_data = SDTDataset("tissuenet_data/train", v2.RandomCrop(128))
+train_data = SDTDataset("tissuenet_data/train", transforms_v2.RandomCrop(128))
 img, sdt = train_data[10]  # get the image and the distance transform
 # We use the `plot_two` function (imported in the first cell) to verify that our
 # dataset solution is correct. The output should show 2 images: the raw image and
@@ -1464,8 +1495,21 @@ plot_two(img, sdt[0], label="SDT")
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-# <b>Task 1.4</b>: Understanding the dataloader.
-# Our dataloader has some features that are not straightforward to understand or justify, and this is a good point
+# <b>Task 1.4</b>: Understanding the Dataset.
+# Our Dataset has some features that are not straightforward to understand or justify, and this is a good point
+# to discuss them.
+#
+# 1. _What are we doing with the `seed` variable and why? Can you predict what will go wrong when you delete the `seed` code and rerun the previous cells visualization?_
+#
+#
+# 2. _What is the purpose of the `loaded_imgs` and `loaded_masks` lists?_
+#
+# </div>
+
+# %% [markdown] tags=["solution"]
+# <div class="alert alert-block alert-info">
+# <b>Task 1.4</b>: Understanding the Dataset.
+# Our Dataset has some features that are not straightforward to understand or justify, and this is a good point
 # to discuss them.
 #
 # 1. _What are we doing with the `seed` variable and why? Can you predict what will go wrong when you delete the `seed` code and rerun the previous cells visualization?_
@@ -1478,13 +1522,13 @@ plot_two(img, sdt[0], label="SDT")
 # </div>
 
 # %% [markdown]
-# Next, we will create a training dataset and data loader.
+# Next, we will create our training dataset and data loader.
 #
 
 # %%
 # TODO: You don't have to add extra augmentations, training will work without.
 # But feel free to experiment here if you want to come back and try to get better results if you have time.
-train_data = SDTDataset("tissuenet_data/train", v2.RandomCrop(128))
+train_data = SDTDataset("tissuenet_data/train", transforms_v2.RandomCrop(128))
 train_loader = DataLoader(
     train_data, batch_size=5, shuffle=True, num_workers=NUM_THREADS
 )
@@ -1608,7 +1652,15 @@ def find_local_maxima(distance_transform, min_dist_between_points):
         number_of_seeds: the number of seeds (scalar)
     """
 
-    ...
+    # Apply a maximum filter to find the maximum value in each neighborhood
+    # This creates an image where each pixel contains the maximum value from its neighborhood
+    max_filtered = ...
+
+    # Find where the original values equal the maximum filtered values
+    # These are the local maxima - points that are >= all their neighbors
+    maxima = ...
+
+    # Uniquely label the local maxima
     seeds, number_of_seeds = ...
 
     return seeds, number_of_seeds
@@ -1690,10 +1742,14 @@ image, mask = val_data[idx]  # get the image and the nuclei masks
 unet.eval()
 
 # remember to move the image to the device
+image = ...
 pred = ...
 
 # turn image, mask, and pred into plain numpy arrays
 # don't forget to remove the batch dimension.
+image = ...
+mask = ...
+pred = ...
 
 # Choose a threshold value to use to get the boundary mask.
 # Feel free to play around with the threshold.
@@ -2064,7 +2120,7 @@ class AffinityDataset(Dataset):
 neighborhood = [[0, 1], [1, 0], [0, 5], [5, 0]]
 train_data = AffinityDataset(
     "tissuenet_data/train",
-    v2.RandomCrop(128),
+    transforms_v2.RandomCrop(128),
     weights=True,
     neighborhood=neighborhood,
 )
@@ -2141,13 +2197,18 @@ for epoch in range(NUM_EPOCHS):
 
 # %% [markdown]
 # Let's next look at a prediction on a random image.
-# We will be using mutex watershed (see this paper by [Wolf et al.](https://arxiv.org/abs/1904.12654)) for post processing. I won't dive too much into the details, but it is similar to watershed except that it allows edges to have negative weights and for splits, removing the need for finding seed points.
-# However this does mean we now need a bias term since if we give it all positive edges (our affinities are in range (0, 1)) everything will join into a single object. Thus our bias should be in range (-1, 0), such that we have some positive and some negative affinities.
+# We will be using mutex watershed (see this paper by [Wolf et al.](https://arxiv.org/abs/1904.12654)) for post processing. I won't dive too much into the details, but it is similar to watershed except that it allows edges to have negative weights for handling split errors, and removes the need for finding seed points and having minimum seed distance as a parameter.
+#
+#
+# However this does mean we now need a bias term since if we give it all positive edges (our affinities are in range (0, 1)) everything will be merged into a single object. Thus our bias should be in range (-1, 0), such that we have some positive and some negative affinities.
+#
 #
 # It can also be useful to bias long range affinities more negatively than the short range affinities. The intuition here being that boundaries are often blurry in biology. This means it may not be easy to tell if the neighboring pixel has crossed a boundary, but it is reasonably easy to tell if there is a boundary accross a 5 pixel gap. Similarly, identifying if two pixels belong to the same object is easier, the closer they are to each other. Providing a more negative bias to long range affinities means we bias towards splitting on low long range affinities, and merging on high short range affinities.
 
 # %%
-val_data = AffinityDataset("tissuenet_data/test", v2.RandomCrop(128), return_mask=True)
+val_data = AffinityDataset(
+    "tissuenet_data/test", transforms_v2.RandomCrop(128), return_mask=True
+)
 val_loader = DataLoader(val_data, batch_size=1, shuffle=False, num_workers=8)
 
 unet.eval()
@@ -2276,14 +2337,14 @@ print(f"Mean Accuracy is {np.mean(accuracy_list):.3f}")
 # %%
 from cellpose import models
 
-model = models.CellposeModel(pretrained_model="cyto3")
+model = models.CellposeModel(pretrained_model="cyto3", device=device)
 channels = [[0, 0]]
 
 precision_list, recall_list, accuracy_list = [], [], []
 for idx, (image, mask, _) in enumerate(tqdm(val_loader)):
     gt_labels = np.squeeze(mask.cpu().numpy())
     image = np.squeeze(image.cpu().numpy())
-    pred_labels, _, _, _ = model.eval([image], diameter=None, channels=channels)
+    pred_labels, _, _ = model.eval([image], diameter=None, channels=channels)
 
     precision, recall, accuracy = evaluate(gt_labels, pred_labels[0])
     precision_list.append(precision)
