@@ -29,7 +29,7 @@
 
 # %% [markdown]
 # <div class="alert alert-block alert-danger">
-# <b>Conda Kernel</b>: Please use the kernel `03-segmentation` for this exercise
+# <b>Conda Kernel</b>: Please use the kernel <code style="color: black">03-segmentation</code> for this exercise
 # </div>
 
 # %% [markdown]
@@ -289,7 +289,7 @@ assert dice(wrong_prediction, target) == 0.0, dice(wrong_prediction, target)
 # essentially gives you the Dice Loss and can be a good alternative to cross entropy.
 #
 # 2) Scores will fall in the range of [-1,1]. Overly confident scores will be penalized i.e.
-# if the target is `[0,1]` then a prediction of `[0,2]` will score higher than a prediction of `[0,3]`.
+# if the target is [0,1] then a prediction of [0,2] will score higher than a prediction of [0,3].
 
 # %% [markdown]
 # <div class="alert alert-block alert-success">
@@ -522,7 +522,7 @@ validate(
 # ## Section 2: Augmentation
 # Often our models will perform better on the evaluation dataset if we augment our training data.
 # This is because the model will be exposed to a wider variety of data that will hopefully help
-# cover the full distribution of data in the validation set. We will use the `torchvision.transforms.v2` modules
+# cover the full distribution of data in the validation set. We will use the <code style="color: black">torchvision.transforms.v2</code> modules
 # to augment our data.
 
 
@@ -538,10 +538,10 @@ validate(
 # %% [markdown]
 # Here is an example augmented dataset. Use it to see how it affects your data, then play around with at least
 # 2 other augmentations.
-# There are two types of augmentations: `transform` and `img_transform`. The first one is applied to both the
+# There are two types of augmentations: <code style="color: black">transform</code> and <code style="color: black">img_transform</code>. The first one is applied to both the
 # image and the mask, the second is only applied to the image. This is useful if you want to apply augmentations
 # that spatially distort your data and you want to make sure the same distortion is applied to the mask and image.
-# `img_transform` is useful for augmentations that don't make sense to apply to the mask, like blurring.
+# <code style="color: black">img_transform</code> is useful for augmentations that don't make sense to apply to the mask, like blurring.
 
 # %%
 train_data = NucleiDataset("nuclei_train_data", transforms_v2.RandomCrop(256))
@@ -681,8 +681,8 @@ except RuntimeError as e:
 # Pay close attention to whether your loss function can handle predictions outside of the range (0, 1).
 # If it can't, theres a good chance that the activation function requires a specific activation before
 # being passed into the loss function. This is a common source of bugs in DL models. For example, trying
-# to use the `torch.nn.BCEWithLogitsLoss` loss function with a model that has a sigmoid activation will
-# result in abysmal performance, wheras using the `torch.nn.BCELoss` loss function with a model that has
+# to use the <code style="color: black">torch.nn.BCEWithLogitsLoss</code> loss function with a model that has a sigmoid activation will
+# result in abysmal performance, wheras using the <code style="color: black">torch.nn.BCELoss</code> loss function with a model that has
 # no activation function will likely error out and fail to train.
 
 # %%
@@ -1110,12 +1110,12 @@ for epoch in range(n_epochs):
 # %% [markdown]
 # # Part II : Instance Segmentation :D
 #
-# So far, we were only interested in `semantic` classes, e.g. foreground / background etc.
-# But in many cases we not only want to know if a certain pixel belongs to a specific class, but also to which unique object (i.e. the task of `instance segmentation`).
+# So far, we were only interested in <code style="color: black">semantic</code> classes, e.g. foreground / background etc.
+# But in many cases we not only want to know if a certain pixel belongs to a specific class, but also to which unique object (i.e. the task of "instance segmentation").
 #
 # For isolated objects, this is trivial, all connected foreground pixels form one instance, yet often instances are very close together or even overlapping. Thus we need to think a bit more how to formulate the targets / loss of our network.
 #
-# Furthermore, in instance segmentation the specific value of each label is arbitrary. Here we label each cell with a number and assign a color to each number giving us a segmentation mask. `Mask 1` and `Mask 2` are equivalently good segmentations even though the specific label of each cell is arbitrary.
+# Furthermore, in instance segmentation the specific value of each label is arbitrary. Here we label each cell with a number and assign a color to each number giving us a segmentation mask. "Mask 1" and "Mask 2" are equivalently good segmentations even though the specific label of each cell is arbitrary.
 #
 # | Image | Mask 1| Mask 2|
 # | :-: | :-: | :-: |
@@ -1252,7 +1252,7 @@ def compute_sdt(labels: np.ndarray, scale: int = 5):
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-# <b>Task 1.1</b>: Explain the `compute_sdt` from the cell above.
+# <b>Task 1.1</b>: Explain the <code style="color: black">compute_sdt</code> from the cell above.
 # </div>
 
 # %% [markdown]
@@ -1262,7 +1262,7 @@ def compute_sdt(labels: np.ndarray, scale: int = 5):
 #
 # 3. _What does meshgrid do?_
 #
-# 4. _Why do we use `map_coordinates`?_
+# 4. _Why do we use <code style="color: black">map_coordinates</code>?_
 #
 # 5. _bonus question: Is the pad sufficient to give us accurate distances at the edge of our image?_
 
@@ -1276,7 +1276,7 @@ def compute_sdt(labels: np.ndarray, scale: int = 5):
 # 3. _What does meshgrid do?_
 # It computes the index coordinate of every voxel. Offset by half on the dimension along which we computed boundaries because the boundaries sit half way between the voxels on either side of the boundary
 #
-# 4. _Why do we use `map_coordinates`?_
+# 4. _Why do we use <code style="color: black">map_coordinates</code>?_
 # Boundaries are defined between pixels, not on individual pixels. So the distance from a pixel on a boundary to the boundary should be half of a pixel. Map Coordinates lets us get this interpolation
 #
 # 5. _bonus question: Is the pad sufficient to give us accurate distances at the edge of our image?_
@@ -1303,7 +1303,7 @@ plot_three(img, label, sdt, label="SDT", label_cmap=label_cmap)
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-# <b>Task 1.2</b>: Explain the scale parameter in <code>compute_sdt</code>.
+# <b>Task 1.2</b>: Explain the scale parameter in <code style="color: black">compute_sdt</code>.
 # </div>
 
 # %% [markdown] tags=["task"]
@@ -1324,8 +1324,9 @@ plot_three(img, label, sdt, label="SDT", label_cmap=label_cmap)
 # %% [markdown]
 # <div class="alert alert-block alert-info">
 # <b>Task 1.3</b>: <br>
-#     Modify the <code>SDTDataset</code> class below to produce the paired raw and SDT images.<br>
-#   1. Fill in the <code>create_sdt_target</code> method to return an SDT output rather than a label mask.<br>
+#     Modify the <code style="color: black">SDTDataset</code> class below to produce the paired raw and SDT images.<br>
+#   1. Fill in the <code style="color: black">create_sdt_target</code> method to return an SDT output rather than a label mask.<br>
+#       - You may need to convert the input mask to a numpy array and use the helper function <code style="color: black">self.from_np</code> to convert back to a torch tensor.<br>
 #       - Ensure that all final outputs are of torch tensor type, and are converted to float.<br>
 #   2. Instantiate the dataset with a RandomCrop of size 128 and visualize the output to confirm that the SDT is correct.
 # </div>
@@ -1397,8 +1398,9 @@ class SDTDataset(Dataset):
 
         ########## YOUR CODE HERE ##########
 
-        ...
-        return ...
+        target = ... # TODO
+        
+        return target
 
 
 # %% tags=["solution"]
@@ -1474,7 +1476,7 @@ class SDTDataset(Dataset):
 
 train_data = SDTDataset("tissuenet_data/train", ...) # TODO
 img, sdt = train_data[10]  # get the image and the distance transform
-# We use the `plot_two` function (imported in the first cell) to verify that our
+# We use the <code style="color: black">plot_two</code> function (imported in the first cell) to verify that our
 # dataset solution is correct. The output should show 2 images: the raw image and
 # the corresponding SDT.
 plot_two(img, sdt[0], label="SDT")
@@ -1486,7 +1488,7 @@ plot_two(img, sdt[0], label="SDT")
 
 train_data = SDTDataset("tissuenet_data/train", transforms_v2.RandomCrop(128))
 img, sdt = train_data[10]  # get the image and the distance transform
-# We use the `plot_two` function (imported in the first cell) to verify that our
+# We use the <code style="color: black">plot_two</code> function (imported in the first cell) to verify that our
 # dataset solution is correct. The output should show 2 images: the raw image and
 # the corresponding SDT.
 plot_two(img, sdt[0], label="SDT")
@@ -1497,10 +1499,10 @@ plot_two(img, sdt[0], label="SDT")
 # Our Dataset has some features that are not straightforward to understand or justify, and this is a good point
 # to discuss them.
 #
-# 1. _What are we doing with the `seed` variable and why? Can you predict what will go wrong when you delete the `seed` code and rerun the previous cells visualization?_
+# 1. _What are we doing with the <code style="color: black">seed</code> variable and why? Can you predict what will go wrong when you delete the <code style="color: black">seed</code> code and rerun the previous cells visualization?_
 #
 #
-# 2. _What is the purpose of the `loaded_imgs` and `loaded_masks` lists?_
+# 2. _What is the purpose of the <code style="color: black">loaded_imgs</code> and <code style="color: black">loaded_masks</code> lists?_
 #
 # </div>
 
@@ -1510,10 +1512,10 @@ plot_two(img, sdt[0], label="SDT")
 # Our Dataset has some features that are not straightforward to understand or justify, and this is a good point
 # to discuss them.
 #
-# 1. _What are we doing with the `seed` variable and why? Can you predict what will go wrong when you delete the `seed` code and rerun the previous cells visualization?_
+# 1. _What are we doing with the <code style="color: black">seed</code> variable and why? Can you predict what will go wrong when you delete the <code style="color: black">seed</code> code and rerun the previous cells visualization?_
 # The seed variable is used to ensure that the same random transform is applied to the image and mask. If we don't use the seed, the image and mask will be transformed differently, leading to misaligned data.
 #
-# 2. _What is the purpose of the `loaded_imgs` and `loaded_masks` lists?_
+# 2. _What is the purpose of the <code style="color: black">loaded_imgs</code> and <code style="color: black">loaded_masks</code> lists?_
 # We load the images and masks into memory to avoid reading them from disk every time we access the dataset. This speeds up the training process. GPUs are very fast so
 # we often need to put a lot of thought into how to provide data to them fast enough.
 #
@@ -1538,7 +1540,7 @@ train_loader = DataLoader(
 # In the cell below, fill in your code anywhere you see ...
 #
 # In this task, initialize the UNet, specify a loss function, learning rate, and optimizer, and train the model.<br>
-# <br> For simplicity we will use a pre-made training function imported from `local.py`. <br>
+# <br> For simplicity we will use a pre-made training function imported from <code style="color: black">local.py</code>. <br>
 # <u>Hints</u>:<br>
 #   - Loss function - [torch losses](https://pytorch.org/docs/stable/nn.html#loss-functions)
 #   - Optimizer - [torch optimizers](https://pytorch.org/docs/stable/optim.html)
@@ -1751,7 +1753,7 @@ pred = ... # TODO
 
 # Choose a threshold value to use to get the boundary mask.
 # Feel free to play around with the threshold.
-# hint: If you're struggling to find a good threshold, you can use the `threshold_otsu` function
+# hint: If you're struggling to find a good threshold, you can use the <code style="color: black">threshold_otsu</code> function
 
 threshold = ... # TODO
 
@@ -2142,7 +2144,7 @@ plot_two(img, affinity, label="Affinities")
 
 unet = ... # TODO
 learning_rate = ... # TODO
-# Note you will need to use `reduce=False` for whatever loss function you choose. The easiest choices will be `BCELoss` or `MSELoss`.
+# Note you will need to use <code style="color: black">reduce=False</code> for whatever loss function you choose. The easiest choices will be <code style="color: black">BCELoss</code> or <code style="color: black">MSELoss</code>.
 # Normally for e.g. MSE loss you compute the squared error of each pixel, then reduce with the mean, and backpropogate.
 # However we want to weight each pixel separately, so we compute the loss per pixel, then multiply by that pixels weight, then reduce with the mean.
 # This provides a larger gradient for pixels that have a larger weight since they will contribute more the the final loss.
