@@ -153,13 +153,11 @@ for epoch in range(10):
 
 # %%
 # Show some predictions on the train data
-show_random_dataset_image(train_data)
 show_random_dataset_image_with_prediction(train_data, unet, device)
 
 
 # %%
 # Show some predictions on the validation data
-show_random_dataset_image(val_data)
 show_random_dataset_image_with_prediction(val_data, unet, device)
 # %% [markdown]
 #
@@ -169,7 +167,7 @@ show_random_dataset_image_with_prediction(val_data, unet, device)
 #     model and see which one is better</p>
 # </div>
 
-# %% [markdown]
+# %% [markdown] tags=["task"]
 # Write your answers here:
 # <ol>
 #     <li></li>
@@ -214,11 +212,11 @@ show_random_dataset_image_with_prediction(val_data, unet, device)
 # The Dice Coefficient is closely related to Jaccard Index / Intersection over Union.
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-# <b>Task 1.1</b>: Fill in implementation details for the Dice Coefficient
+# <b>Task 1.1</b>: Fill in implementation details for the Dice Coefficient. You can do this without using any torch or numpy functions.
 # </div>
 
 
-# %%
+# %% tags=["task"]
 # Sorensen Dice Coefficient implemented in torch
 # the coefficient takes values in two discrete arrays
 # with values in {0, 1}, and produces a score in [0, 1]
@@ -231,8 +229,8 @@ class DiceCoefficient(nn.Module):
     # the dice coefficient of two sets represented as vectors a, b can be
     # computed as (2 *|a b| / (a^2 + b^2))
     def forward(self, prediction, target):
-        intersection = ...
-        union = ...
+        intersection = ... # TODO: your code here
+        union = ... # TODO: your code here
         return 2 * intersection / union.clamp(min=self.eps)
 
 
@@ -254,7 +252,7 @@ class DiceCoefficient(nn.Module):
         return 2 * intersection / union.clamp(min=self.eps)
 
 
-# %% [markdown] tags=["solution"]
+# %% [markdown]
 # <div class="alert alert-block alert-warning">
 #     Test your Dice Coefficient here, are you getting the right scores?
 # </div>
@@ -279,7 +277,7 @@ assert dice(wrong_prediction, target) == 0.0, dice(wrong_prediction, target)
 #     </ol>
 # </div>
 
-# %% [markdown]
+# %% [markdown] tags=["task"]
 # Answer:
 # 1) ...
 #
@@ -309,12 +307,12 @@ assert dice(wrong_prediction, target) == 0.0, dice(wrong_prediction, target)
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-#     <b>Task 1.3</b>: Fix in all the TODOs to make the validate function work. If confused, you can use this
+#     <b>Task 1.3</b>: Fix in all the TODOs (3) to make the validate function work. If confused, you can use this
 # <a href="https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html">PyTorch tutorial</a> as a template
 # </div>
 
 
-# %%
+# %% tags=["task"]
 # run validation after training epoch
 def validate(
     model,
@@ -364,15 +362,15 @@ def validate(
         for x, y in loader:
             x, y = x.to(device), y.to(device)
             # TODO: evaluate this example with the given loss and metric
-            prediction = ...
+            prediction = ... # TODO
             # We *usually* want the target to be the same type as the prediction
             # however this is very dependent on your choice of loss function and
             # metric. If you get errors such as "RuntimeError: Found dtype Float but expected Short"
             # then this is where you should look.
             if y.dtype != prediction.dtype:
                 y = y.type(prediction.dtype)
-            val_loss += ...
-            val_metric += ...
+            val_loss += ... # TODO
+            val_metric += ... # TODO
 
     # normalize loss and metric
     val_loss /= len(loader)
@@ -485,13 +483,13 @@ def validate(
     )
 
 
-# %% [markdown] tags=["solution"]
+# %% [markdown]
 # <div class="alert alert-block alert-info">
 #     <b>Task 1.4</b>: Evaluate your first model using the Dice Coefficient. How does it perform? If you trained two models,
 #     do the scores agree with your visual determination of which model was better?
 # </div>
 
-# %%
+# %% tags=["task"]
 
 # Evaluate your model here
 validate(...)
@@ -509,7 +507,7 @@ validate(
     device=device,
 )
 
-# %% [markdown] tags=["solution"]
+# %% [markdown]
 # <div class="alert alert-block alert-success">
 #     <h2>Checkpoint 2</h2>
 #
@@ -567,7 +565,7 @@ show_random_augmentation_comparison(train_data, example_augmented_data)
 #      likely be optimal. Bonus points if you can get good results without the custom noise.
 # </div>
 
-# %%
+# %% tags=["task"]
 augmented_data = ...
 
 # %% tags=["solution"]
@@ -580,19 +578,20 @@ augmented_data = NucleiDataset(
 )
 
 
-# %% [markdown] tags=["solution"]
+# %% [markdown]
 # <div class="alert alert-block alert-info">
 #     <b>Task 2.2</b>: Now retrain your model with your favorite augmented dataset. Did your model improve?
 # </div>
 
 
-# %%
+# %% tags=["task"]
 
 unet = UNet(depth=4, in_channels=1, out_channels=1, num_fmaps=2).to(device)
 loss = nn.MSELoss()
 optimizer = torch.optim.Adam(unet.parameters())
 augmented_loader = DataLoader(augmented_data, batch_size=5, shuffle=True, num_workers=8)
 
+# TODO: train your model on the augmented dataset
 ...
 
 # %% tags=["solution"]
@@ -605,12 +604,12 @@ augmented_loader = DataLoader(augmented_data, batch_size=5, shuffle=True, num_wo
 for epoch in range(10):
     train(unet, augmented_loader, optimizer, loss, epoch, device=device)
 
-# %% [markdown] tags=["solution"]
+# %% [markdown]
 # <div class="alert alert-block alert-info">
 #     <b>Task 2.3</b>: Now evaluate your model. Did your model improve?
 # </div>
 
-# %%
+# %% tag=["task"]
 validate(...)
 
 # %% tags=["solution"]
@@ -639,7 +638,7 @@ validate(unet, val_loader, loss, DiceCoefficient(), device=device)
 #     <b>Task 3.1</b>: Implement your loss (or take one from pytorch):
 # </div>
 
-# %%
+# %% tags=["task"]
 # implement your loss here or initialize the one of your choice from PyTorch
 loss_function: torch.nn.Module = ...
 
@@ -647,7 +646,7 @@ loss_function: torch.nn.Module = ...
 # implement your loss here or initialize the one of your choice from PyTorch
 loss_function: torch.nn.Module = nn.BCELoss()
 
-# %% [markdown] tags=["solution"]
+# %% [markdown]
 # <div class="alert alert-block alert-warning">
 #     Test your loss function here, is it behaving as you'd expect?
 # </div>
@@ -713,7 +712,6 @@ launch_tensorboard("runs")
 
 
 # %%
-# Use the unet you expect to work the best!
 model = UNet(
     depth=4,
     in_channels=1,
@@ -750,8 +748,8 @@ for epoch in range(n_epochs):
 
 
 # %% [markdown]
-# Your validation metric was probably around 85% by the end of the training. That sounds good enough,
-# but an equally important thing to check is: Open the Images tab in your Tensorboard and compare
+# Check the value of your validation metric at end of the training. Even if the number seems good enough,
+# an equally important thing to check is: Open the Images tab in your Tensorboard and compare
 # predictions to targets. Do your predictions look reasonable? Are there any obvious failure cases?
 # If nothing is clearly wrong, let's see if we can still improve the model performance by changing
 # the model or the loss
@@ -878,7 +876,7 @@ for epoch in range(n_epochs):
 #     <b>Task BONUS.2</b>: More Layers
 # </div>
 
-# %%
+# %% tags=["task"]
 # Experiment with more layers. For example UNet with depth 5
 
 model = ...
@@ -941,7 +939,7 @@ for epoch in range(n_epochs):
 # </div>
 
 
-# %%
+# %% tags=["task"]
 class DiceLoss(nn.Module):
     """ """
 
@@ -974,7 +972,7 @@ class DiceLoss(nn.Module):
         return self.offset - coefficient
 
 
-# %% tags=["solution"]
+# %% tags=["task"]
 # Now combine the Dice Coefficient layer with the Invert layer to make a Dice Loss
 dice_loss = ...
 
@@ -982,7 +980,7 @@ dice_loss = ...
 # Now combine the Dice Coefficient layer with the Invert layer to make a Dice Loss
 dice_loss = DiceLoss()
 
-# %% tags=["solution"]
+# %% tags=["task"]
 # Experiment with Dice Loss
 net = ...
 optimizer = ...
@@ -1002,7 +1000,7 @@ optimizer = torch.optim.Adam(net.parameters())
 metric = DiceCoefficient()
 loss_func = dice_loss
 
-# %% tags=["solution"]
+# %%
 logger = SummaryWriter("runs/UNet_diceloss")
 
 n_epochs = 40
@@ -1028,7 +1026,7 @@ for epoch in range(n_epochs):
 # </div>
 
 
-# %%
+# %% tags=["task"]
 net = ...
 optimizer = ...
 metric = ...
@@ -1072,7 +1070,7 @@ for epoch in range(n_epochs):
 #     <b>Task BONUS.5</b>: Group Norm + Dice + U-Net 5 Layers
 # </div>
 
-# %%
+# %% tags=["task"]
 net = ...
 optimizer = ...
 metric = ...
