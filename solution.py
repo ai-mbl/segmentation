@@ -29,7 +29,7 @@
 
 # %% [markdown]
 # <div class="alert alert-block alert-danger">
-# <b>Conda Kernel</b>: Please use the kernel `03-segmentation` for this exercise
+# <b>Conda Kernel</b>: Please use the kernel <code style="color: black">03-segmentation</code> for this exercise
 # </div>
 
 # %% [markdown]
@@ -153,13 +153,11 @@ for epoch in range(10):
 
 # %%
 # Show some predictions on the train data
-show_random_dataset_image(train_data)
 show_random_dataset_image_with_prediction(train_data, unet, device)
 
 
 # %%
 # Show some predictions on the validation data
-show_random_dataset_image(val_data)
 show_random_dataset_image_with_prediction(val_data, unet, device)
 # %% [markdown]
 #
@@ -169,7 +167,7 @@ show_random_dataset_image_with_prediction(val_data, unet, device)
 #     model and see which one is better</p>
 # </div>
 
-# %% [markdown]
+# %% [markdown] tags=["task"]
 # Write your answers here:
 # <ol>
 #     <li></li>
@@ -214,11 +212,11 @@ show_random_dataset_image_with_prediction(val_data, unet, device)
 # The Dice Coefficient is closely related to Jaccard Index / Intersection over Union.
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-# <b>Task 1.1</b>: Fill in implementation details for the Dice Coefficient
+# <b>Task 1.1</b>: Fill in implementation details for the Dice Coefficient. You can do this without using any torch or numpy functions.
 # </div>
 
 
-# %%
+# %% tags=["task"]
 # Sorensen Dice Coefficient implemented in torch
 # the coefficient takes values in two discrete arrays
 # with values in {0, 1}, and produces a score in [0, 1]
@@ -231,8 +229,8 @@ class DiceCoefficient(nn.Module):
     # the dice coefficient of two sets represented as vectors a, b can be
     # computed as (2 *|a b| / (a^2 + b^2))
     def forward(self, prediction, target):
-        intersection = ...
-        union = ...
+        intersection = ... # TODO: your code here
+        union = ... # TODO: your code here
         return 2 * intersection / union.clamp(min=self.eps)
 
 
@@ -254,7 +252,7 @@ class DiceCoefficient(nn.Module):
         return 2 * intersection / union.clamp(min=self.eps)
 
 
-# %% [markdown] tags=["solution"]
+# %% [markdown]
 # <div class="alert alert-block alert-warning">
 #     Test your Dice Coefficient here, are you getting the right scores?
 # </div>
@@ -279,7 +277,7 @@ assert dice(wrong_prediction, target) == 0.0, dice(wrong_prediction, target)
 #     </ol>
 # </div>
 
-# %% [markdown]
+# %% [markdown] tags=["task"]
 # Answer:
 # 1) ...
 #
@@ -291,7 +289,7 @@ assert dice(wrong_prediction, target) == 0.0, dice(wrong_prediction, target)
 # essentially gives you the Dice Loss and can be a good alternative to cross entropy.
 #
 # 2) Scores will fall in the range of [-1,1]. Overly confident scores will be penalized i.e.
-# if the target is `[0,1]` then a prediction of `[0,2]` will score higher than a prediction of `[0,3]`.
+# if the target is [0,1] then a prediction of [0,2] will score higher than a prediction of [0,3].
 
 # %% [markdown]
 # <div class="alert alert-block alert-success">
@@ -309,12 +307,12 @@ assert dice(wrong_prediction, target) == 0.0, dice(wrong_prediction, target)
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-#     <b>Task 1.3</b>: Fix in all the TODOs to make the validate function work. If confused, you can use this
+#     <b>Task 1.3</b>: Fix in all the TODOs (3) to make the validate function work. If confused, you can use this
 # <a href="https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html">PyTorch tutorial</a> as a template
 # </div>
 
 
-# %%
+# %% tags=["task"]
 # run validation after training epoch
 def validate(
     model,
@@ -364,15 +362,15 @@ def validate(
         for x, y in loader:
             x, y = x.to(device), y.to(device)
             # TODO: evaluate this example with the given loss and metric
-            prediction = ...
+            prediction = ... # TODO
             # We *usually* want the target to be the same type as the prediction
             # however this is very dependent on your choice of loss function and
             # metric. If you get errors such as "RuntimeError: Found dtype Float but expected Short"
             # then this is where you should look.
             if y.dtype != prediction.dtype:
                 y = y.type(prediction.dtype)
-            val_loss += ...
-            val_metric += ...
+            val_loss += ... # TODO
+            val_metric += ... # TODO
 
     # normalize loss and metric
     val_loss /= len(loader)
@@ -485,13 +483,13 @@ def validate(
     )
 
 
-# %% [markdown] tags=["solution"]
+# %% [markdown]
 # <div class="alert alert-block alert-info">
 #     <b>Task 1.4</b>: Evaluate your first model using the Dice Coefficient. How does it perform? If you trained two models,
 #     do the scores agree with your visual determination of which model was better?
 # </div>
 
-# %%
+# %% tags=["task"]
 
 # Evaluate your model here
 validate(...)
@@ -509,7 +507,7 @@ validate(
     device=device,
 )
 
-# %% [markdown] tags=["solution"]
+# %% [markdown]
 # <div class="alert alert-block alert-success">
 #     <h2>Checkpoint 2</h2>
 #
@@ -524,7 +522,7 @@ validate(
 # ## Section 2: Augmentation
 # Often our models will perform better on the evaluation dataset if we augment our training data.
 # This is because the model will be exposed to a wider variety of data that will hopefully help
-# cover the full distribution of data in the validation set. We will use the `torchvision.transforms.v2` modules
+# cover the full distribution of data in the validation set. We will use the <code style="color: black">torchvision.transforms.v2</code> modules
 # to augment our data.
 
 
@@ -540,10 +538,10 @@ validate(
 # %% [markdown]
 # Here is an example augmented dataset. Use it to see how it affects your data, then play around with at least
 # 2 other augmentations.
-# There are two types of augmentations: `transform` and `img_transform`. The first one is applied to both the
+# There are two types of augmentations: <code style="color: black">transform</code> and <code style="color: black">img_transform</code>. The first one is applied to both the
 # image and the mask, the second is only applied to the image. This is useful if you want to apply augmentations
 # that spatially distort your data and you want to make sure the same distortion is applied to the mask and image.
-# `img_transform` is useful for augmentations that don't make sense to apply to the mask, like blurring.
+# <code style="color: black">img_transform</code> is useful for augmentations that don't make sense to apply to the mask, like blurring.
 
 # %%
 train_data = NucleiDataset("nuclei_train_data", transforms_v2.RandomCrop(256))
@@ -567,7 +565,7 @@ show_random_augmentation_comparison(train_data, example_augmented_data)
 #      likely be optimal. Bonus points if you can get good results without the custom noise.
 # </div>
 
-# %%
+# %% tags=["task"]
 augmented_data = ...
 
 # %% tags=["solution"]
@@ -580,19 +578,20 @@ augmented_data = NucleiDataset(
 )
 
 
-# %% [markdown] tags=["solution"]
+# %% [markdown]
 # <div class="alert alert-block alert-info">
 #     <b>Task 2.2</b>: Now retrain your model with your favorite augmented dataset. Did your model improve?
 # </div>
 
 
-# %%
+# %% tags=["task"]
 
 unet = UNet(depth=4, in_channels=1, out_channels=1, num_fmaps=2).to(device)
 loss = nn.MSELoss()
 optimizer = torch.optim.Adam(unet.parameters())
 augmented_loader = DataLoader(augmented_data, batch_size=5, shuffle=True, num_workers=8)
 
+# TODO: train your model on the augmented dataset
 ...
 
 # %% tags=["solution"]
@@ -605,12 +604,12 @@ augmented_loader = DataLoader(augmented_data, batch_size=5, shuffle=True, num_wo
 for epoch in range(10):
     train(unet, augmented_loader, optimizer, loss, epoch, device=device)
 
-# %% [markdown] tags=["solution"]
+# %% [markdown]
 # <div class="alert alert-block alert-info">
 #     <b>Task 2.3</b>: Now evaluate your model. Did your model improve?
 # </div>
 
-# %%
+# %% tag=["task"]
 validate(...)
 
 # %% tags=["solution"]
@@ -639,7 +638,7 @@ validate(unet, val_loader, loss, DiceCoefficient(), device=device)
 #     <b>Task 3.1</b>: Implement your loss (or take one from pytorch):
 # </div>
 
-# %%
+# %% tags=["task"]
 # implement your loss here or initialize the one of your choice from PyTorch
 loss_function: torch.nn.Module = ...
 
@@ -647,7 +646,7 @@ loss_function: torch.nn.Module = ...
 # implement your loss here or initialize the one of your choice from PyTorch
 loss_function: torch.nn.Module = nn.BCELoss()
 
-# %% [markdown] tags=["solution"]
+# %% [markdown]
 # <div class="alert alert-block alert-warning">
 #     Test your loss function here, is it behaving as you'd expect?
 # </div>
@@ -682,8 +681,8 @@ except RuntimeError as e:
 # Pay close attention to whether your loss function can handle predictions outside of the range (0, 1).
 # If it can't, theres a good chance that the activation function requires a specific activation before
 # being passed into the loss function. This is a common source of bugs in DL models. For example, trying
-# to use the `torch.nn.BCEWithLogitsLoss` loss function with a model that has a sigmoid activation will
-# result in abysmal performance, wheras using the `torch.nn.BCELoss` loss function with a model that has
+# to use the <code style="color: black">torch.nn.BCEWithLogitsLoss</code> loss function with a model that has a sigmoid activation will
+# result in abysmal performance, wheras using the <code style="color: black">torch.nn.BCELoss</code> loss function with a model that has
 # no activation function will likely error out and fail to train.
 
 # %%
@@ -713,7 +712,6 @@ launch_tensorboard("runs")
 
 
 # %%
-# Use the unet you expect to work the best!
 model = UNet(
     depth=4,
     in_channels=1,
@@ -750,8 +748,8 @@ for epoch in range(n_epochs):
 
 
 # %% [markdown]
-# Your validation metric was probably around 85% by the end of the training. That sounds good enough,
-# but an equally important thing to check is: Open the Images tab in your Tensorboard and compare
+# Check the value of your validation metric at end of the training. Even if the number seems good enough,
+# an equally important thing to check is: Open the Images tab in your Tensorboard and compare
 # predictions to targets. Do your predictions look reasonable? Are there any obvious failure cases?
 # If nothing is clearly wrong, let's see if we can still improve the model performance by changing
 # the model or the loss
@@ -878,7 +876,7 @@ for epoch in range(n_epochs):
 #     <b>Task BONUS.2</b>: More Layers
 # </div>
 
-# %%
+# %% tags=["task"]
 # Experiment with more layers. For example UNet with depth 5
 
 model = ...
@@ -941,7 +939,7 @@ for epoch in range(n_epochs):
 # </div>
 
 
-# %%
+# %% tags=["task"]
 class DiceLoss(nn.Module):
     """ """
 
@@ -974,7 +972,7 @@ class DiceLoss(nn.Module):
         return self.offset - coefficient
 
 
-# %% tags=["solution"]
+# %% tags=["task"]
 # Now combine the Dice Coefficient layer with the Invert layer to make a Dice Loss
 dice_loss = ...
 
@@ -982,7 +980,7 @@ dice_loss = ...
 # Now combine the Dice Coefficient layer with the Invert layer to make a Dice Loss
 dice_loss = DiceLoss()
 
-# %% tags=["solution"]
+# %% tags=["task"]
 # Experiment with Dice Loss
 net = ...
 optimizer = ...
@@ -1002,7 +1000,7 @@ optimizer = torch.optim.Adam(net.parameters())
 metric = DiceCoefficient()
 loss_func = dice_loss
 
-# %% tags=["solution"]
+# %%
 logger = SummaryWriter("runs/UNet_diceloss")
 
 n_epochs = 40
@@ -1028,7 +1026,7 @@ for epoch in range(n_epochs):
 # </div>
 
 
-# %%
+# %% tags=["task"]
 net = ...
 optimizer = ...
 metric = ...
@@ -1072,7 +1070,7 @@ for epoch in range(n_epochs):
 #     <b>Task BONUS.5</b>: Group Norm + Dice + U-Net 5 Layers
 # </div>
 
-# %%
+# %% tags=["task"]
 net = ...
 optimizer = ...
 metric = ...
@@ -1112,12 +1110,12 @@ for epoch in range(n_epochs):
 # %% [markdown]
 # # Part II : Instance Segmentation :D
 #
-# So far, we were only interested in `semantic` classes, e.g. foreground / background etc.
-# But in many cases we not only want to know if a certain pixel belongs to a specific class, but also to which unique object (i.e. the task of `instance segmentation`).
+# So far, we were only interested in <code style="color: black">semantic</code> classes, e.g. foreground / background etc.
+# But in many cases we not only want to know if a certain pixel belongs to a specific class, but also to which unique object (i.e. the task of "instance segmentation").
 #
 # For isolated objects, this is trivial, all connected foreground pixels form one instance, yet often instances are very close together or even overlapping. Thus we need to think a bit more how to formulate the targets / loss of our network.
 #
-# Furthermore, in instance segmentation the specific value of each label is arbitrary. Here we label each cell with a number and assign a color to each number giving us a segmentation mask. `Mask 1` and `Mask 2` are equivalently good segmentations even though the specific label of each cell is arbitrary.
+# Furthermore, in instance segmentation the specific value of each label is arbitrary. Here we label each cell with a number and assign a color to each number giving us a segmentation mask. "Mask 1" and "Mask 2" are equivalently good segmentations even though the specific label of each cell is arbitrary.
 #
 # | Image | Mask 1| Mask 2|
 # | :-: | :-: | :-: |
@@ -1254,7 +1252,7 @@ def compute_sdt(labels: np.ndarray, scale: int = 5):
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-# <b>Task 1.1</b>: Explain the `compute_sdt` from the cell above.
+# <b>Task 1.1</b>: Explain the <code style="color: black">compute_sdt</code> from the cell above.
 # </div>
 
 # %% [markdown]
@@ -1264,7 +1262,7 @@ def compute_sdt(labels: np.ndarray, scale: int = 5):
 #
 # 3. _What does meshgrid do?_
 #
-# 4. _Why do we use `map_coordinates`?_
+# 4. _Why do we use <code style="color: black">map_coordinates</code>?_
 #
 # 5. _bonus question: Is the pad sufficient to give us accurate distances at the edge of our image?_
 
@@ -1278,7 +1276,7 @@ def compute_sdt(labels: np.ndarray, scale: int = 5):
 # 3. _What does meshgrid do?_
 # It computes the index coordinate of every voxel. Offset by half on the dimension along which we computed boundaries because the boundaries sit half way between the voxels on either side of the boundary
 #
-# 4. _Why do we use `map_coordinates`?_
+# 4. _Why do we use <code style="color: black">map_coordinates</code>?_
 # Boundaries are defined between pixels, not on individual pixels. So the distance from a pixel on a boundary to the boundary should be half of a pixel. Map Coordinates lets us get this interpolation
 #
 # 5. _bonus question: Is the pad sufficient to give us accurate distances at the edge of our image?_
@@ -1305,10 +1303,10 @@ plot_three(img, label, sdt, label="SDT", label_cmap=label_cmap)
 
 # %% [markdown]
 # <div class="alert alert-block alert-info">
-# <b>Task 1.2</b>: Explain the scale parameter in <code>compute_sdt</code>.
+# <b>Task 1.2</b>: Explain the scale parameter in <code style="color: black">compute_sdt</code>.
 # </div>
 
-# %% [markdown]
+# %% [markdown] tags=["task"]
 # <b>Questions</b>:
 # 1. _Why do we need to normalize the distances between -1 and 1?_
 #
@@ -1326,14 +1324,15 @@ plot_three(img, label, sdt, label="SDT", label_cmap=label_cmap)
 # %% [markdown]
 # <div class="alert alert-block alert-info">
 # <b>Task 1.3</b>: <br>
-#     Modify the <code>SDTDataset</code> class below to produce the paired raw and SDT images.<br>
-#   1. Fill in the <code>create_sdt_target</code> method to return an SDT output rather than a label mask.<br>
+#     Modify the <code style="color: black">SDTDataset</code> class below to produce the paired raw and SDT images.<br>
+#   1. Fill in the <code style="color: black">create_sdt_target</code> method to return an SDT output rather than a label mask.<br>
+#       - You may need to convert the input mask to a numpy array and use the helper function <code style="color: black">self.from_np</code> to convert back to a torch tensor.<br>
 #       - Ensure that all final outputs are of torch tensor type, and are converted to float.<br>
 #   2. Instantiate the dataset with a RandomCrop of size 128 and visualize the output to confirm that the SDT is correct.
 # </div>
 
 
-# %%
+# %% tags=["task"]
 class SDTDataset(Dataset):
     """A PyTorch dataset to load cell images and nuclei masks."""
 
@@ -1399,8 +1398,9 @@ class SDTDataset(Dataset):
 
         ########## YOUR CODE HERE ##########
 
-        ...
-        return ...
+        target = ... # TODO
+        
+        return target
 
 
 # %% tags=["solution"]
@@ -1469,14 +1469,14 @@ class SDTDataset(Dataset):
         return sdt_target.float()
 
 
-# %%
+# %% tags=["task"]
 # Create a dataset using a RandomCrop of size 128 (see torchvision.transforms.v2 imported as v2)
 # documentation here: https://pytorch.org/vision/stable/transforms.html#v2-api-reference-recommended
 # Visualize the output to confirm your dataset is working.
 
-train_data = SDTDataset("tissuenet_data/train", ...)
+train_data = SDTDataset("tissuenet_data/train", ...) # TODO
 img, sdt = train_data[10]  # get the image and the distance transform
-# We use the `plot_two` function (imported in the first cell) to verify that our
+# We use the <code style="color: black">plot_two</code> function (imported in the first cell) to verify that our
 # dataset solution is correct. The output should show 2 images: the raw image and
 # the corresponding SDT.
 plot_two(img, sdt[0], label="SDT")
@@ -1488,21 +1488,21 @@ plot_two(img, sdt[0], label="SDT")
 
 train_data = SDTDataset("tissuenet_data/train", transforms_v2.RandomCrop(128))
 img, sdt = train_data[10]  # get the image and the distance transform
-# We use the `plot_two` function (imported in the first cell) to verify that our
+# We use the <code style="color: black">plot_two</code> function (imported in the first cell) to verify that our
 # dataset solution is correct. The output should show 2 images: the raw image and
 # the corresponding SDT.
 plot_two(img, sdt[0], label="SDT")
 
-# %% [markdown]
+# %% [markdown] tags=["task"]
 # <div class="alert alert-block alert-info">
 # <b>Task 1.4</b>: Understanding the Dataset.
 # Our Dataset has some features that are not straightforward to understand or justify, and this is a good point
 # to discuss them.
 #
-# 1. _What are we doing with the `seed` variable and why? Can you predict what will go wrong when you delete the `seed` code and rerun the previous cells visualization?_
+# 1. _What are we doing with the <code style="color: black">seed</code> variable in <code style="color: black">SDTDataset.__getitem__</code> and why? Can you predict what will go wrong when you delete the <code style="color: black">seed</code> code and rerun the previous cells visualization?_
 #
 #
-# 2. _What is the purpose of the `loaded_imgs` and `loaded_masks` lists?_
+# 2. _What is the purpose of the <code style="color: black">loaded_imgs</code> and <code style="color: black">loaded_masks</code> lists?_
 #
 # </div>
 
@@ -1512,10 +1512,10 @@ plot_two(img, sdt[0], label="SDT")
 # Our Dataset has some features that are not straightforward to understand or justify, and this is a good point
 # to discuss them.
 #
-# 1. _What are we doing with the `seed` variable and why? Can you predict what will go wrong when you delete the `seed` code and rerun the previous cells visualization?_
+# 1. _What are we doing with the <code style="color: black">seed</code> variable in <code style="color: black">SDTDataset.__getitem__</code> and why? Can you predict what will go wrong when you delete the <code style="color: black">seed</code> code and rerun the previous cells visualization?_
 # The seed variable is used to ensure that the same random transform is applied to the image and mask. If we don't use the seed, the image and mask will be transformed differently, leading to misaligned data.
 #
-# 2. _What is the purpose of the `loaded_imgs` and `loaded_masks` lists?_
+# 2. _What is the purpose of the <code style="color: black">loaded_imgs</code> and <code style="color: black">loaded_masks</code> lists?_
 # We load the images and masks into memory to avoid reading them from disk every time we access the dataset. This speeds up the training process. GPUs are very fast so
 # we often need to put a lot of thought into how to provide data to them fast enough.
 #
@@ -1540,7 +1540,7 @@ train_loader = DataLoader(
 # In the cell below, fill in your code anywhere you see ...
 #
 # In this task, initialize the UNet, specify a loss function, learning rate, and optimizer, and train the model.<br>
-# <br> For simplicity we will use a pre-made training function imported from `local.py`. <br>
+# <br> For simplicity we will use a pre-made training function imported from <code style="color: black">local.py</code>. <br>
 # <u>Hints</u>:<br>
 #   - Loss function - [torch losses](https://pytorch.org/docs/stable/nn.html#loss-functions)
 #   - Optimizer - [torch optimizers](https://pytorch.org/docs/stable/optim.html)
@@ -1550,7 +1550,7 @@ train_loader = DataLoader(
 #       - [relu](https://pytorch.org/docs/stable/generated/torch.nn.ReLU.html#torch.nn.ReLU)
 # </div>
 
-# %%
+# %% tags=["task"]
 # If you manage to get a loss close to 0.1, you are doing pretty well and can probably move on
 unet = ...
 
@@ -1635,7 +1635,7 @@ plot_three(image, sdt, pred)
 # <u>Hint</u>: It is possible to write this function by only adding 2 lines.
 # </div>
 
-# %%
+# %% tags=["task"]
 from scipy.ndimage import label, maximum_filter
 
 
@@ -1654,14 +1654,14 @@ def find_local_maxima(distance_transform, min_dist_between_points):
 
     # Apply a maximum filter to find the maximum value in each neighborhood
     # This creates an image where each pixel contains the maximum value from its neighborhood
-    max_filtered = ...
+    max_filtered = ... # TODO
 
     # Find where the original values equal the maximum filtered values
     # These are the local maxima - points that are >= all their neighbors
-    maxima = ...
+    maxima = ... # TODO
 
     # Uniquely label the local maxima
-    seeds, number_of_seeds = ...
+    seeds, number_of_seeds = ... # TODO
 
     return seeds, number_of_seeds
 
@@ -1732,7 +1732,7 @@ def watershed_from_boundary_distance(
 # <b>Task 2.2</b>: <br> Use the model to generate a predicted SDT and then use the watershed function we defined above to post-process the model output into a segmentation
 # </div>
 
-# %%
+# %% tags=["task"]
 idx = np.random.randint(len(val_data))  # take a random sample
 image, mask = val_data[idx]  # get the image and the nuclei masks
 
@@ -1742,26 +1742,26 @@ image, mask = val_data[idx]  # get the image and the nuclei masks
 unet.eval()
 
 # remember to move the image to the device
-image = ...
-pred = ...
+image = ... # TODO
+pred = ... # TODO
 
 # turn image, mask, and pred into plain numpy arrays
 # don't forget to remove the batch dimension.
-image = ...
-mask = ...
-pred = ...
+image = ... # TODO
+mask = ... # TODO
+pred = ... # TODO
 
 # Choose a threshold value to use to get the boundary mask.
 # Feel free to play around with the threshold.
-# hint: If you're struggling to find a good threshold, you can use the `threshold_otsu` function
+# hint: If you're struggling to find a good threshold, you can use the <code style="color: black">threshold_otsu</code> function
 
-threshold = ...
+threshold = ... # TODO
 
 # Get a semantic segmentation by thresholding your distance transform
-semantic_segmentation = ...
+semantic_segmentation = ... # TODO
 
 # Get the segmentation
-seg = watershed_from_boundary_distance(...)
+seg = watershed_from_boundary_distance(...) # TODO
 
 # %% tags=["solution"]
 idx = np.random.randint(len(val_data))  # take a random sample
@@ -1828,7 +1828,7 @@ plot_four(image, mask, pred, seg, label="Target", cmap=label_cmap)
 # <b>Task 3.2</b>: <br> Evaluate metrics for the validation dataset. Fill in the blanks
 # </div>
 
-# %%
+# %% tags=["task"]
 from local import evaluate
 
 # Need to re-initialize the dataloader to return masks in addition to SDTs.
@@ -1856,11 +1856,11 @@ for idx, (image, mask, sdt) in enumerate(tqdm(val_dataloader)):
     pred = np.squeeze(pred.cpu().detach().numpy())
 
     # feel free to try different thresholds
-    thresh = ...
+    thresh = ... # TODO
 
     # get boundary mask
-    semantic_segmentation = ...
-    pred_labels = ...
+    semantic_segmentation = ... # TODO
+    pred_labels = ... # TODO
     precision, recall, accuracy = evaluate(gt_labels, pred_labels)
     precision_list.append(precision)
     recall_list.append(recall)
@@ -2140,16 +2140,16 @@ plot_two(img, affinity, label="Affinities")
 # (The best for SDT is not necessarily the best for affinities.)
 # </div>
 
-# %%
+# %% tags=["task"]
 
-unet = ...
-learning_rate = ...
-# Note you will need to use `reduce=False` for whatever loss function you choose. The easiest choices will be `BCELoss` or `MSELoss`.
+unet = ... # TODO
+learning_rate = ... # TODO
+# Note you will need to use <code style="color: black">reduce=False</code> for whatever loss function you choose. The easiest choices will be <code style="color: black">BCELoss</code> or <code style="color: black">MSELoss</code>.
 # Normally for e.g. MSE loss you compute the squared error of each pixel, then reduce with the mean, and backpropogate.
 # However we want to weight each pixel separately, so we compute the loss per pixel, then multiply by that pixels weight, then reduce with the mean.
 # This provides a larger gradient for pixels that have a larger weight since they will contribute more the the final loss.
-loss = ...
-optimizer = ...
+loss = ... # TODO
+optimizer = ... # TODO
 
 # %% tags=["solution"]
 
@@ -2171,14 +2171,14 @@ loss = torch.nn.BCELoss(reduce=False)
 
 optimizer = torch.optim.Adam(unet.parameters(), lr=learning_rate)
 
-# %%
+# %% tags=["task"]
 for epoch in range(NUM_EPOCHS):
     train(
-        ...,
-        ...,
-        ...,
-        ...,
-        ...,
+        ..., # TODO
+        ..., # TODO
+        ..., # TODO
+        ..., # TODO
+        ..., # TODO
         log_interval=2,
         device=device,
     )
