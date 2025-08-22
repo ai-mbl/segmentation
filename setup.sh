@@ -9,9 +9,6 @@ uv pip install -r requirements.txt
 
 python -m ipykernel install --user --name "03-segmentation"
 
-# Build the notebooks
-sh prepare-exercise.sh
-
 # Download and extract data, etc.
 echo -e "\n downloading data...\n"
 gdown -O kaggle_data.zip 1ahuduC_4Ex84R7qKNRzAY6PiLRWX_J3I
