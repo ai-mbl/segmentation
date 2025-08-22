@@ -1614,7 +1614,7 @@ plot_three(image, sdt, pred)
 
 # %% [markdown]
 # <div class="alert alert-block alert-success">
-# <h2> Checkpoint 1 </h2>
+# <h2> Checkpoint 1</h2>
 #
 # At this point we have a model that does what we told it too, but do not yet have a segmentation. <br>
 # In the next section, we will perform some post-processing and obtain segmentations from our predictions.
