@@ -1306,7 +1306,7 @@ plot_three(img, label, sdt, label="SDT", label_cmap=label_cmap)
 # <b>Task 1.2</b>: Explain the scale parameter in <code>compute_sdt</code>.
 # </div>
 
-# %% [markdown]
+# %% [markdown] tags=["task"]
 # <b>Questions</b>:
 # 1. _Why do we need to normalize the distances between -1 and 1?_
 #
@@ -1331,7 +1331,7 @@ plot_three(img, label, sdt, label="SDT", label_cmap=label_cmap)
 # </div>
 
 
-# %%
+# %% tags=["task"]
 class SDTDataset(Dataset):
     """A PyTorch dataset to load cell images and nuclei masks."""
 
@@ -1467,12 +1467,12 @@ class SDTDataset(Dataset):
         return sdt_target.float()
 
 
-# %%
+# %% tags=["task"]
 # Create a dataset using a RandomCrop of size 128 (see torchvision.transforms.v2 imported as v2)
 # documentation here: https://pytorch.org/vision/stable/transforms.html#v2-api-reference-recommended
 # Visualize the output to confirm your dataset is working.
 
-train_data = SDTDataset("tissuenet_data/train", ...)
+train_data = SDTDataset("tissuenet_data/train", ...) # TODO
 img, sdt = train_data[10]  # get the image and the distance transform
 # We use the `plot_two` function (imported in the first cell) to verify that our
 # dataset solution is correct. The output should show 2 images: the raw image and
@@ -1491,7 +1491,7 @@ img, sdt = train_data[10]  # get the image and the distance transform
 # the corresponding SDT.
 plot_two(img, sdt[0], label="SDT")
 
-# %% [markdown]
+# %% [markdown] tags=["task"]
 # <div class="alert alert-block alert-info">
 # <b>Task 1.4</b>: Understanding the Dataset.
 # Our Dataset has some features that are not straightforward to understand or justify, and this is a good point
@@ -1548,7 +1548,7 @@ train_loader = DataLoader(
 #       - [relu](https://pytorch.org/docs/stable/generated/torch.nn.ReLU.html#torch.nn.ReLU)
 # </div>
 
-# %%
+# %% tags=["task"]
 # If you manage to get a loss close to 0.1, you are doing pretty well and can probably move on
 unet = ...
 
@@ -1633,7 +1633,7 @@ plot_three(image, sdt, pred)
 # <u>Hint</u>: It is possible to write this function by only adding 2 lines.
 # </div>
 
-# %%
+# %% tags=["task"]
 from scipy.ndimage import label, maximum_filter
 
 
@@ -1652,14 +1652,14 @@ def find_local_maxima(distance_transform, min_dist_between_points):
 
     # Apply a maximum filter to find the maximum value in each neighborhood
     # This creates an image where each pixel contains the maximum value from its neighborhood
-    max_filtered = ...
+    max_filtered = ... # TODO
 
     # Find where the original values equal the maximum filtered values
     # These are the local maxima - points that are >= all their neighbors
-    maxima = ...
+    maxima = ... # TODO
 
     # Uniquely label the local maxima
-    seeds, number_of_seeds = ...
+    seeds, number_of_seeds = ... # TODO
 
     return seeds, number_of_seeds
 
@@ -1730,7 +1730,7 @@ def watershed_from_boundary_distance(
 # <b>Task 2.2</b>: <br> Use the model to generate a predicted SDT and then use the watershed function we defined above to post-process the model output into a segmentation
 # </div>
 
-# %%
+# %% tags=["task"]
 idx = np.random.randint(len(val_data))  # take a random sample
 image, mask = val_data[idx]  # get the image and the nuclei masks
 
@@ -1740,26 +1740,26 @@ image, mask = val_data[idx]  # get the image and the nuclei masks
 unet.eval()
 
 # remember to move the image to the device
-image = ...
-pred = ...
+image = ... # TODO
+pred = ... # TODO
 
 # turn image, mask, and pred into plain numpy arrays
 # don't forget to remove the batch dimension.
-image = ...
-mask = ...
-pred = ...
+image = ... # TODO
+mask = ... # TODO
+pred = ... # TODO
 
 # Choose a threshold value to use to get the boundary mask.
 # Feel free to play around with the threshold.
 # hint: If you're struggling to find a good threshold, you can use the `threshold_otsu` function
 
-threshold = ...
+threshold = ... # TODO
 
 # Get a semantic segmentation by thresholding your distance transform
-semantic_segmentation = ...
+semantic_segmentation = ... # TODO
 
 # Get the segmentation
-seg = watershed_from_boundary_distance(...)
+seg = watershed_from_boundary_distance(...) # TODO
 
 # %% tags=["solution"]
 idx = np.random.randint(len(val_data))  # take a random sample
@@ -1818,7 +1818,7 @@ plot_four(image, mask, pred, seg, label="Target", cmap=label_cmap)
 #   3) [Sensitivity](https://metrics-reloaded.dkfz.de/metric?id=sensitivity) and [Specificity](https://metrics-reloaded.dkfz.de/metric?id=specificity@target_value)
 # </div>
 
-# %% [markdown]
+# %% [markdown] tags=["solution"]
 # We will use Accuracy, Specificity/Precision, and Sensitivity/Recall as our evaluation metrics. IoU is also a good metric to use, but it is more commonly used for semantic segmentation tasks.
 
 # %% [markdown]
@@ -1826,7 +1826,7 @@ plot_four(image, mask, pred, seg, label="Target", cmap=label_cmap)
 # <b>Task 3.2</b>: <br> Evaluate metrics for the validation dataset. Fill in the blanks
 # </div>
 
-# %%
+# %% tags=["task"]
 from local import evaluate
 
 # Need to re-initialize the dataloader to return masks in addition to SDTs.
@@ -1854,11 +1854,11 @@ for idx, (image, mask, sdt) in enumerate(tqdm(val_dataloader)):
     pred = np.squeeze(pred.cpu().detach().numpy())
 
     # feel free to try different thresholds
-    thresh = ...
+    thresh = ... # TODO
 
     # get boundary mask
-    semantic_segmentation = ...
-    pred_labels = ...
+    semantic_segmentation = ... # TODO
+    pred_labels = ... # TODO
     precision, recall, accuracy = evaluate(gt_labels, pred_labels)
     precision_list.append(precision)
     recall_list.append(recall)
@@ -2138,16 +2138,16 @@ plot_two(img, affinity, label="Affinities")
 # (The best for SDT is not necessarily the best for affinities.)
 # </div>
 
-# %%
+# %% tags=["task"]
 
-unet = ...
-learning_rate = ...
+unet = ... # TODO
+learning_rate = ... # TODO
 # Note you will need to use `reduce=False` for whatever loss function you choose. The easiest choices will be `BCELoss` or `MSELoss`.
 # Normally for e.g. MSE loss you compute the squared error of each pixel, then reduce with the mean, and backpropogate.
 # However we want to weight each pixel separately, so we compute the loss per pixel, then multiply by that pixels weight, then reduce with the mean.
 # This provides a larger gradient for pixels that have a larger weight since they will contribute more the the final loss.
-loss = ...
-optimizer = ...
+loss = ... # TODO
+optimizer = ... # TODO
 
 # %% tags=["solution"]
 
@@ -2169,14 +2169,14 @@ loss = torch.nn.BCELoss(reduce=False)
 
 optimizer = torch.optim.Adam(unet.parameters(), lr=learning_rate)
 
-# %%
+# %% tags=["task"]
 for epoch in range(NUM_EPOCHS):
     train(
-        ...,
-        ...,
-        ...,
-        ...,
-        ...,
+        ..., # TODO
+        ..., # TODO
+        ..., # TODO
+        ..., # TODO
+        ..., # TODO
         log_interval=2,
         device=device,
     )
