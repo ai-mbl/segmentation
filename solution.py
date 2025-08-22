@@ -1499,7 +1499,7 @@ plot_two(img, sdt[0], label="SDT")
 # Our Dataset has some features that are not straightforward to understand or justify, and this is a good point
 # to discuss them.
 #
-# 1. _What are we doing with the <code style="color: black">seed</code> variable and why? Can you predict what will go wrong when you delete the <code style="color: black">seed</code> code and rerun the previous cells visualization?_
+# 1. _What are we doing with the <code style="color: black">seed</code> variable in <code style="color: black">SDTDataset.__getitem__</code> and why? Can you predict what will go wrong when you delete the <code style="color: black">seed</code> code and rerun the previous cells visualization?_
 #
 #
 # 2. _What is the purpose of the <code style="color: black">loaded_imgs</code> and <code style="color: black">loaded_masks</code> lists?_
@@ -1512,7 +1512,7 @@ plot_two(img, sdt[0], label="SDT")
 # Our Dataset has some features that are not straightforward to understand or justify, and this is a good point
 # to discuss them.
 #
-# 1. _What are we doing with the <code style="color: black">seed</code> variable and why? Can you predict what will go wrong when you delete the <code style="color: black">seed</code> code and rerun the previous cells visualization?_
+# 1. _What are we doing with the <code style="color: black">seed</code> variable in <code style="color: black">SDTDataset.__getitem__</code> and why? Can you predict what will go wrong when you delete the <code style="color: black">seed</code> code and rerun the previous cells visualization?_
 # The seed variable is used to ensure that the same random transform is applied to the image and mask. If we don't use the seed, the image and mask will be transformed differently, leading to misaligned data.
 #
 # 2. _What is the purpose of the <code style="color: black">loaded_imgs</code> and <code style="color: black">loaded_masks</code> lists?_
@@ -1820,7 +1820,7 @@ plot_four(image, mask, pred, seg, label="Target", cmap=label_cmap)
 #   3) [Sensitivity](https://metrics-reloaded.dkfz.de/metric?id=sensitivity) and [Specificity](https://metrics-reloaded.dkfz.de/metric?id=specificity@target_value)
 # </div>
 
-# %% [markdown] tags=["solution"]
+# %% [markdown]
 # We will use Accuracy, Specificity/Precision, and Sensitivity/Recall as our evaluation metrics. IoU is also a good metric to use, but it is more commonly used for semantic segmentation tasks.
 
 # %% [markdown]
